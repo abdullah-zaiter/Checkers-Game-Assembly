@@ -1,2 +1,2 @@
 # Checkers-Game-Assembly
-Workspace for the final project of OAC.
+Our Workspace of the final project of Computer Organization and Architecture.

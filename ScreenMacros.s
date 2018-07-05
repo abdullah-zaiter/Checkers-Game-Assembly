@@ -1,21 +1,7 @@
-		# Defines
-#.include "SYSTEMv11.s"
-	
-	# Limites da tela
-	.eqv ScreenBg 0xFF000000
-	.eqv ScreenEnd 0xFF012C00
-	.eqv ScreenHeight 240
-	.eqv ScreenWidth 320
-	
-	# Cores
-	.eqv BLACK 0x00
-	.eqv WHITE 0xFF
-	.eqv RED 0x07
-	.eqv GREEN 0x38
-	.eqv BLUE 0xC0
-	.eqv BROWN 0x13
-	.eqv LIGHTBROWN 0x66
-	.eqv DARKBROWN 0x0A
+# Defines
+.include "SYSTEMv11.s"
+.include "funcUteis.s"
+.include "parametros.s"
 
 #_____________________________________________________________________________________________
 	#Macro para debug
@@ -199,6 +185,8 @@ InsPieceEnd:
 	.end_macro
 #_______________________________________________________________________________________________________
 
+.globl main
+main:
 	# Rotina de teste
 		PrintBoard
 		li a7, 1
@@ -206,16 +194,26 @@ InsPieceEnd:
 		ecall
 		li t1, 100
 		li t2, 100	
-		Circle(20, t1, t2, WHITE)	
-		InsertPiece(1, 1, BLACK)
-		InsertPiece(2, 1, BLACK)
-		InsertPiece(5, 2, BLACK)
-		InsertPiece(9, 1, BLACK)
-		InsertPiece(1, 5, BLACK)
-		InsertPiece(6, 4, BLACK)
-		InsertPiece(7, 6, BLACK)
-		InsertPiece(2, 8, BLACK)
-		InsertPiece(1, 4, BLACK)
+
+		li a0, 0
+		li a1, 50
+		li a2, BLACK
+		li a3, 100
+		li s3, 1
+		jal PrintCirculo
+		
+		#jal PrintCirculo
+
+		#Circle(20, t1, t2, WHITE)	
+		#InsertPiece(1, 1, BLACK)
+		#InsertPiece(2, 1, BLACK)
+		#InsertPiece(5, 2, BLACK)
+		#InsertPiece(9, 1, BLACK)
+		#InsertPiece(1, 5, BLACK)
+		#InsertPiece(6, 4, BLACK)
+		#InsertPiece(7, 6, BLACK)
+		#InsertPiece(2, 8, BLACK)
+		#InsertPiece(1, 4, BLACK)
 		
 #		Circle (14, 14, 45, s2)
 #		Circle (14, 14, 105, s2)

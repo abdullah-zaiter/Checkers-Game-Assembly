@@ -32,7 +32,7 @@ LOOP:		beq a0, a1, END
 END:
 	.end_macro
 	
-		.macro PaintBlue()
+	.macro PaintBlue()
 		li a0, ScreenBg
 		li a1, ScreenEnd
 LOOP:		beq a0, a1, END
@@ -43,7 +43,7 @@ LOOP:		beq a0, a1, END
 END:
 	.end_macro
 	
-		.macro PaintGreen()
+	.macro PaintGreen()
 		li a0, ScreenBg
 		li a1, ScreenEnd
 LOOP:		beq a0, a1, END

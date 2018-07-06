@@ -1,0 +1,11 @@
+Pra alterar a imagem, é só trocar todos aqueles bytes (tem 240*320, é bem grande KKK) pelos bytes da imagem que vc quer
+
+E pra gerar esses bytes vc faz o seguinte: pega a imagem que você quer (garanta que já tá 240 por 320), roda o código do Lamar bmp2oac mandando ela como parâmetro. Vai gerar um arquivo .bin e outro .mif . O .mif vc abre no rars, e lá vão ter todos os bytes, mas com informação a mais
+
+Detalhe, não tem 0x na frente dos bytes, e não tão separados por vírgula (não tenho certeza se essa seria realmente necessária)
+
+Daí o que eu tava fazendo era o seguinte: eu copiava a parada pro sublime, selecionava toooodos os espaços do arquivo, e na esquerda eu colocava uma vírgula, e na direita do espaço ia o 0x
+
+Como ele também indica a posição de memória da parada no início de cada linha, e isso seguido de : , eu selecionava todos os : do arquivo, e segurando shift selecionava tudo que era número indicando linha de memória e apagava isso
+
+E no final da linha tb tinha sempre um ;

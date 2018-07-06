@@ -36,7 +36,24 @@ Dama:.word 	32,		68,		-1,		0,
 	      	88, 	108, 	1, 		0      #FIM DO SEGUNDO JOGADOR   	      		      	   	      	   	      		      	   	      	          		      	   	      	   	      		      	   	      	    
 
 .text
-
+######################################################################################
+#
+#############################	LISTA DE MACROS
+#
+#push()
+#pop()
+#scanInt()
+#printInt()
+#scanChar()
+#printChar()
+#printString()
+#pause()
+#
+#
+#PaintColor()
+#PrintBoard()
+#ClearBoard
+######################################################################################
 .macro push(%valor) ############# PUSH ##############
 	addi sp, sp, -4
 	sw %valor, 0(sp)
@@ -107,18 +124,47 @@ Dama:.word 	32,		68,		-1,		0,
     	pop(a7)
 .end_macro
 
+##Como usar
+# addi %reg, zero,RED
+# PaintColor(%reg)
+.macro PaintColor(%color)
+		li a0, ScreenBg
+		li a1, ScreenEnd
+LOOP:		beq a0, a1, END
+		add t2, zero, %color
+		sb t2, 0(a0)
+		addi a0, a0, 1
+		j LOOP
+END:
+.end_macro
 
+#Imprime o tabuleiro
+.macro PrintBoard()
+	la a0, board
+	li a1, ScreenBg
+	li a2, ScreenEnd
+	addi a2, a2, 1
+	
+LOOP:	beq a1, a2, END
+	lb a3, 0(a0)
+	sb a3, 0(a1)
+	addi a0, a0, 4
+	addi a1, a1, 1
+	j LOOP
+END:
+.end_macro
+
+##Como usar
 # a0 X inicial 
 # a1 Y inicial 
 # a2 cor
-
 ClearBoard:
 	push(ra)
 	push(a0)
 	push(a1)
 	push(a2)
 	push(a3)
-	
+
 		lw t0, BLACK		#Carrega a Cor
 		li t1, 76800		#65536 Pixels do Display 163845536		#65536 Pixels do Display 16384
 

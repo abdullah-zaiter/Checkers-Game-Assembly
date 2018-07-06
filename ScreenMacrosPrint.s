@@ -1,5 +1,5 @@
 		# Defines
-.include "SYSTEMv11.s"	
+.include "lib/SYSTEMv11.s"	
 	# Limites da tela
 	.eqv ScreenBg 0xFF000000
 	.eqv ScreenEnd 0xFF012C00
@@ -200,8 +200,6 @@ InsPieceEnd:
 
 	# Rotina de teste
 	.globl main
-
-
 main:		PrintBoard
 		li a7, 1
 		li a0, 30

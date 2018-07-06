@@ -1,7 +1,7 @@
 # Defines
-.include "SYSTEMv11.s"
-.include "funcUteis.s"
-.include "parametros.s"
+.include "lib/SYSTEMv11.s"
+.include "lib/funcUteis.s"
+.include "lib/parametros.s"
 
 #_____________________________________________________________________________________________
 	#Macro para debug
@@ -200,7 +200,6 @@ main:
 		li a2, BLACK
 		li a3, 100
 		li s3, 1
-		jal PrintCirculo
 		
 		#jal PrintCirculo
 

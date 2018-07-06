@@ -2,7 +2,7 @@
 # Conectar o BitMap Display e o KD MMIO para executar
 # na DE1-SoC e no Rars deve ter o mesmo comportamento sem alterar nada!
 
-.include "macros.s"
+.include "lib/macros.s"
 
 
 .data
@@ -35,4 +35,4 @@ PRINTSTR1: li a7,104
 
 
 
-.include "SYSTEMv11.s"
+.include "lib/SYSTEMv11.s"

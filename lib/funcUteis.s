@@ -1,6 +1,6 @@
 .data
 .eqv _bmpAddress	0x10040	
-.eqv ScreenBegin 0xFF000000#0xFF002C00
+#.eqv ScreenBegin 0xFF000000#0xFF002C00
 #0xFF025800
 BLACK:			.word	0x00000000 # BLACK
 WHITE:			.word	0x00ffffff # WHITE
@@ -51,8 +51,8 @@ Dama:.word 	32,		68,		-1,		0,
 #
 #
 #PaintColor()
+#PaintRegion(%color, %xi, %yi, %xf, %yf)
 #PrintBoard()
-#ClearBoard
 ######################################################################################
 .macro push(%valor) ############# PUSH ##############
 	addi sp, sp, -4
@@ -138,6 +138,105 @@ LOOP:		beq a0, a1, END
 END:
 .end_macro
 
+.macro PaintRegion(%color, %xi, %yi, %xf, %yf)
+		li t0, 320
+		mul t0, %yi, t0			##	Yi * 320
+		add t1, t0, %xi 		## 	Yi*320 + Xi
+		li	t2, ScreenBg
+		add a0, t1, t2	## 	Yi*320 + Xi + Endereço Inicial
+		
+		li t0, 320
+		mul t0, %yf, t0			##	Yi * 320
+		add t1, t0, %xf 		## 	Yi*320 + Xi
+		li	t2, ScreenEnd
+		add a1, t1, t2	## 	Yi*320 + Xi + Endereço Inicial
+		
+		#li a0, ScreenBg
+		#li a1, ScreenEnd
+LOOP:		beq a0, a1, END
+		add t2, zero, %color
+		sb t2, 0(a0)
+		addi a0, a0, 1
+		j LOOP
+END:
+.end_macro
+
+#deve ser usado com registradores sX ou aX (tX nao funcionam)
+.macro PaintPixel(%color, %x, %y)
+		push(%color)
+		push(%x)
+		push(%y)
+		li t0, 320
+		mul t0, %y, t0			##	Yi * 320
+		add t1, t0, %x 		## 	Yi*320 + Xi
+		li	t2, ScreenBg
+		add a0, t1, t2	## 	Yi*320 + Xi + Endereço Inicial
+		pop(%y)
+		pop(%x)
+		pop(%color)
+		add a1, zero, %color
+		sb	a1, 0(a0)
+
+.end_macro
+
+
+.macro PaintLine(%color, %x, %y, %xf)
+	LOOP:
+		push(%color)
+		push(%x)
+		push(%y)
+		push(%xf)
+		beq %x, %xf, END
+		PaintPixel(%color, %x, %y)
+		pop(%xf)
+		pop(%y)
+		pop(%x)
+		pop(%color)
+
+		addi %x, %x, 1
+
+
+		j LOOP
+	END:
+
+	pop(%color)
+	pop(%x)
+	pop(%y)
+	pop(%xf)
+.end_macro
+
+.macro PaintCol(%color, %x, %y, %yf)
+	LOOP:
+		push(%color)
+		push(%x)
+		push(%y)
+		push(%yf)
+		beq %y, %yf, END
+		PaintPixel(%color, %x, %y)
+		pop(%yf)
+		pop(%y)
+		pop(%x)
+		pop(%color)
+		
+		addi %y, %y, 1
+
+
+		j LOOP
+	END:
+.end_macro
+
+#deve ser usado com registradores sX (tX nao funcionam)
+.macro PaintSquare(%color, %x, %y, %yf)
+    add s5, zero, %x
+	LOOP:
+		beq %y, %yf, END
+    	PaintLine(%color, %x, %y, %yf)
+		addi %y, %y, 1 
+		add %x, zero, s5		
+		j LOOP
+	END:
+.end_macro
+
 #Imprime o tabuleiro
 .macro PrintBoard()
 	la a0, board
@@ -153,36 +252,3 @@ LOOP:	beq a1, a2, END
 	j LOOP
 END:
 .end_macro
-
-##Como usar
-# a0 X inicial 
-# a1 Y inicial 
-# a2 cor
-ClearBoard:
-	push(ra)
-	push(a0)
-	push(a1)
-	push(a2)
-	push(a3)
-
-		lw t0, BLACK		#Carrega a Cor
-		li t1, 76800		#65536 Pixels do Display 163845536		#65536 Pixels do Display 16384
-
-	StartCLoop:
-
-		addi t1, t1, -4
-        li t3, ScreenBegin
-		add t2, t1, t3
-		sw t0, 0(t2)
-		beqz t1, EndCLoop
-		j StartCLoop
-
-	EndCLoop:
-	
-		pop(a3)
-		pop(a2)
-		pop(a1)
-		pop(a0)
-		pop(ra)
-		jr ra
-end:

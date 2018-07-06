@@ -33,5 +33,8 @@
 	.eqv LIGHTBROWN 0x66
 	.eqv DARKBROWN 0x0A
 
+	
+	.eqv TRANSPARENT 0xc7
+
 
     .eqv _bmpAddress	0x10040

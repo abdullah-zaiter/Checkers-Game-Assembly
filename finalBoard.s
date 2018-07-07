@@ -17,7 +17,7 @@ main:
     #PaintColor(t1)
     la t1, blue #Escolhe a cor, blue ou red
     initPosicoes(t1)
-    addi t0, zero, 0x00000041
+    addi t0, zero, 0x00000040
     getPosicao(t0, t2)
 
 

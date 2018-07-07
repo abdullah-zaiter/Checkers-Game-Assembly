@@ -1,12 +1,12 @@
 .data
-	#ally_pieces: 	.byte 0xA0 0xA8 0xB0 0xB8 0x64 0x6C 0x74 0x7C 0xE0 0xE8 0xF0 0xF8
-	#enemy_pieces:	.byte 0x04 0x0C 0x14 0x1C 0x20 0x28 0x30 0x38 0x44 0x4C 0x54 0x5C
 	ally_pieces: 	.byte 0xA0 0xA8 0xB0 0xB8 0x64 0x6C 0x74 0x7C 0xE0 0xE8 0xF0 0xF8
-	enemy_pieces:	.byte 0x84 0x0C 0x14 0x1C 0x20 0x28 0x30 0x38 0x44 0x4C 0x54 0x5C
+	enemy_pieces:	.byte 0x04 0x0C 0x14 0x1C 0x20 0x28 0x30 0x38 0x44 0x4C 0x54 0x5C
+	#ally_pieces: 	.byte 0xA0 0xA8 0xB0 0xB8 0x64 0x6C 0x74 0x7C 0xE0 0xE8 0xF0 0xF8
+	#enemy_pieces:	.byte 0x84 0x0C 0x14 0x1C 0x20 0x28 0x30 0x38 0x44 0x4C 0x54 0x5C
 .text
 
 ##################################################################################################################################################
-############	Rotina de movimentação do jogador humano (tem que alterar pra botar na placa - ver systemv11.s -)
+############	Rotina de movimentaï¿½ï¿½o do jogador humano (tem que alterar pra botar na placa - ver systemv11.s -)
 ##################################################################################################################################################
 human_move:	addi	sp, sp, -4
 		sw	ra, 0(sp)
@@ -17,7 +17,7 @@ human_move:	addi	sp, sp, -4
 		li	a7, 5
 		ecall
 		or	t0, t0, a0
-		slli	t0, t0, 2	# Fim da leitura da posicao atual da peça (contido em t0)
+		slli	t0, t0, 2	# Fim da leitura da posicao atual da peï¿½a (contido em t0)
 		li	a7, 5
 		ecall
 		add	t1, a0, zero
@@ -37,7 +37,7 @@ human_move:	addi	sp, sp, -4
 		lw	t1, 4(sp)
 		addi	sp, sp, 8
 		beq	a0, zero, invalid_move
-		lbu	t0, 0(a1)		# Carrega a posicao atual da peca da memoria (para saber se é rainha)
+		lbu	t0, 0(a1)		# Carrega a posicao atual da peca da memoria (para saber se ï¿½ rainha)
 		mv	t4, a1
 		mv	a0, t1
 		slli	a0, a0, 8
@@ -51,9 +51,9 @@ human_move:	addi	sp, sp, -4
 		addi	sp, sp, 8
 		beq	a0, zero, invalid_move	# Se a0==0, os pontos nao estao em diagonal
 		li	t3, -1
-		beq	a1, t3, diag_adj	# Se a distancia em Y for 1, é diagonalmente adjacente
+		beq	a1, t3, diag_adj	# Se a distancia em Y for 1, ï¿½ diagonalmente adjacente
 		addi	t3, t3, -1
-		beq	a1, t3, diag_adj2	# Se a distancia em Y for 2, é diagonal pulando uma casa (possível ataque ao inimigo)
+		beq	a1, t3, diag_adj2	# Se a distancia em Y for 2, ï¿½ diagonal pulando uma casa (possï¿½vel ataque ao inimigo)
 		andi	t2, t0, 0x1
 		beq	t2, zero, invalid_move	# Se nao for rainha, a peca nao pode pular mais de duas casas na diagonal
 		j	verif_queen
@@ -168,9 +168,9 @@ not_found:	li	a0, 0
 exit_verif_vetor:	jr	ra			# descomentar para funcionar
 
 ##################################################################################################################################################
-############						    Verifica se as posicoes em 0(a0) e 1(a0) são diagonais 
+############						    Verifica se as posicoes em 0(a0) e 1(a0) sï¿½o diagonais 
 ############		                          recebe				###			    retorna	
-############	   a0 -> byte 0 contem a posicao atual, byte 1 contem posicao desejada	###     se (a0==0) não é diagonal, se (a0==1) é diagonal
+############	   a0 -> byte 0 contem a posicao atual, byte 1 contem posicao desejada	###     se (a0==0) nï¿½o ï¿½ diagonal, se (a0==1) ï¿½ diagonal
 ############	  									###		a1 = diferenca em y (y2-y1)
 ##################################################################################################################################################
 verif_diagonal:	andi	t2, a0, 0xFF
@@ -201,3 +201,28 @@ invalid_move:	##### MOSTRA MSG DE ERRO E REPETE TURNO ####
 EXIT_human_move:sw	ra, 0(sp)
 		addi	sp, sp, 4
 		#jr	ra
+
+
+PegaAsParada:
+	la t0, ally_pieces
+	li t1, 12
+	LoopPegaAsParada: beq t1, zero, SaiLoopPegaAsParada 
+		lbu t2, 0(t0)
+		andi t3, t2, 0x2
+		bne t3, zero, invalid
+		andi t3, t2, 0x1C
+		srli t3, t3, 2
+		andi t4, t2, 0xE0
+		srli t4, t4, 5
+		slli t4, t4 4
+		or t4, t4, t3 
+		getPosicao(t4, s5)
+		la t6, blue
+		PrintPiece(s5, t6)
+	invalid:
+		addi t0, t0, 1
+		addi t1, t1, -1
+		j LoopPegaAsParada
+	SaiLoopPegaAsParada:
+		#pop(ra)
+		THEEND()

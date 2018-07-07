@@ -129,30 +129,6 @@ END:
 .end_macro
 
 
-.macro PrintPieceRed(%pos)
-	
-	add a1, zero, %pos 
-	
-	li t3, endPiece
-	add a2, a1, t3
-	
-	addi a4, a1, 19
-	la a0, red
-	addi a2, a2, 1
-LOOP:	bge a1, a2, END
-	lb a3, 0(a0)
-	sb a3, 0(a1)
-	bne a1, a4, CONTINUE
-	SOMA320:
-		addi a1, a1, 301
-		addi a4, a4, 320
-	CONTINUE:
-		addi a0, a0, 4
-		addi a1, a1, 1
-		j LOOP
-END:
-.end_macro
-
 #Imprime o tabuleiro
 .macro PrintBoard()
 	la a0, board2
@@ -333,3 +309,9 @@ END:
     add t0, t0, t1
     lw %return, 0(t0)
 .end_macro
+
+
+.macro THEEND()
+    j ENDMAIN
+.end_macro
+    ENDMAIN: j ENDMAIN

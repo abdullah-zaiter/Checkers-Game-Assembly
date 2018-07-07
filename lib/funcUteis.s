@@ -1,5 +1,7 @@
 .data
 .eqv _bmpAddress	0x10040	
+.eqv endPiece		0x00001553
+
 #.eqv ScreenBegin 0xFF000000#0xFF002C00
 #0xFF025800
 BLACK:			.word	0x00000000 # BLACK
@@ -199,10 +201,10 @@ END:
 		j LOOP
 	END:
 
-	pop(%color)
-	pop(%x)
-	pop(%y)
-	pop(%xf)
+		pop(%xf)
+		pop(%y)
+		pop(%x)
+		pop(%color)
 .end_macro
 
 .macro PaintCol(%color, %x, %y, %yf)
@@ -223,6 +225,12 @@ END:
 
 		j LOOP
 	END:
+		pop(%yf)
+		pop(%y)
+		pop(%x)
+		pop(%color)
+
+
 .end_macro
 
 #deve ser usado com registradores sX (tX nao funcionam)
@@ -237,9 +245,88 @@ END:
 	END:
 .end_macro
 
+.macro PrintPieceBlue(%x, %y)
+	li t0, 320
+	mul t0, %y, t0			##	Yi * 320
+	add t1, t0, %x 		## 	Yi*320 + Xi
+	li	t2, ScreenBg
+	add a1, t1, t2	## 	(Yi*320 + Xi + Endereço Inicial) = Inicio peça
+
+	li t3, endPiece
+	add a2, a1, t3
+	
+	addi a4, a1, 19
+	la a0, blue
+	addi a2, a2, 1
+LOOP:	bge a1, a2, END
+	lb a3, 0(a0)
+	sb a3, 0(a1)
+	beq a1, a4, SOMA320
+	j CONTINUE
+	SOMA320:
+		addi a1, a1, 301
+		addi a4, a4, 320
+	CONTINUE:
+		addi a0, a0, 4
+		addi a1, a1, 1
+		j LOOP
+END:
+.end_macro
+
+.macro PrintPieceBlue(%pos)
+	
+	add a1, zero, %pos 
+	
+	li t3, endPiece
+	add a2, a1, t3
+	
+	addi a4, a1, 19
+	la a0, blue
+	addi a2, a2, 1
+LOOP:	bge a1, a2, END
+	lb a3, 0(a0)
+	sb a3, 0(a1)
+	beq a1, a4, SOMA320
+	j CONTINUE
+	SOMA320:
+		addi a1, a1, 301
+		addi a4, a4, 320
+	CONTINUE:
+		addi a0, a0, 4
+		addi a1, a1, 1
+		j LOOP
+END:
+.end_macro
+
+
+.macro PrintPieceRed(%pos)
+	
+	add a1, zero, %pos 
+	
+	li t3, endPiece
+	add a2, a1, t3
+	
+	addi a4, a1, 19
+	la a0, red
+	addi a2, a2, 1
+LOOP:	bge a1, a2, END
+	lb a3, 0(a0)
+	sb a3, 0(a1)
+	beq a1, a4, SOMA320
+	j CONTINUE
+	SOMA320:
+		addi a1, a1, 301
+		addi a4, a4, 320
+	CONTINUE:
+		addi a0, a0, 4
+		addi a1, a1, 1
+		j LOOP
+END:
+.end_macro
+
 #Imprime o tabuleiro
 .macro PrintBoard()
-	la a0, board
+	la a0, board2
 	li a1, ScreenBg
 	li a2, ScreenEnd
 	addi a2, a2, 1

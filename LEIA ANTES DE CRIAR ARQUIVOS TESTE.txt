@@ -1,0 +1,3 @@
+Criem arquivos de teste e coloquem na pasta Teste quando commitarem.
+Quando forem dar include em algum arquivo da pasta lib coloquem assim:
+.include "../lib/macros.s"

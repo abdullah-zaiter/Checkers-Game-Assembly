@@ -66,103 +66,6 @@ Dama:.word 	32,		68,		-1,		0,
 	addi sp, sp,4
 .end_macro
 
-.macro scanInt(%valor) ############# SCAN_INT ############## 
-	push(a7)
-	li  a7, 5        
-    	syscall 
-    	la  %valor, 0(a7)
-    	pop(a7)
-.end_macro
-
-.macro printInt(%valor) ############# PRINT_INT ##############
-	push(a7)
-	push(a0)
-	
-	li  a7, 1          
-    	mv a0, %valor
-    	syscall
-    	printString(Auxiliar)
-    	pop(a0)
-    	pop(a7)
-    	
-.end_macro
-
-.macro scanChar(%valor) ############# SCAN_CHAR ############## 
-	push(a7)
-	li  a7, 12           
-    	syscall
-    	la  %valor, 0(a7)
-    	pop(a7)
-.end_macro
-
-.macro printChar(%valor) ############# PRINT_CHAR ##############
-	push(a7)
-	push(a0)
-	li  a7,  11          
-    	mv a0, %valor
-    	syscall 	
-    	pop(a0)
-    	pop(a7)
-.end_macro
-
-.macro printString(%valor)	############# PRINT_STRING ##############
-	push(a7)
-	push(a0)	
-	li a7, 4
-	la a0, %valor
-	syscall	
-	pop(a0)
-    	pop(a7)
-.end_macro
-
-
-.macro pause(%valor) ############# pause ##############
-	push(a7)
-    	push(a0)	
-	li a7, 32
-	li a0, %valor
-	syscall	
-	pop(a0)
-    	pop(a7)
-.end_macro
-
-##Como usar
-# addi %reg, zero,RED
-# PaintColor(%reg)
-.macro PaintColor(%color)
-		li a0, ScreenBg
-		li a1, ScreenEnd
-LOOP:		beq a0, a1, END
-		add t2, zero, %color
-		sb t2, 0(a0)
-		addi a0, a0, 1
-		j LOOP
-END:
-.end_macro
-
-.macro PaintRegion(%color, %xi, %yi, %xf, %yf)
-		li t0, 320
-		mul t0, %yi, t0			##	Yi * 320
-		add t1, t0, %xi 		## 	Yi*320 + Xi
-		li	t2, ScreenBg
-		add a0, t1, t2	## 	Yi*320 + Xi + Endereço Inicial
-		
-		li t0, 320
-		mul t0, %yf, t0			##	Yi * 320
-		add t1, t0, %xf 		## 	Yi*320 + Xi
-		li	t2, ScreenEnd
-		add a1, t1, t2	## 	Yi*320 + Xi + Endereço Inicial
-		
-		#li a0, ScreenBg
-		#li a1, ScreenEnd
-LOOP:		beq a0, a1, END
-		add t2, zero, %color
-		sb t2, 0(a0)
-		addi a0, a0, 1
-		j LOOP
-END:
-.end_macro
-
 #deve ser usado com registradores sX ou aX (tX nao funcionam)
 .macro PaintPixel(%color, %x, %y)
 		push(%color)
@@ -181,7 +84,6 @@ END:
 
 .end_macro
 
-
 .macro PaintLine(%color, %x, %y, %xf)
 	LOOP:
 		push(%color)
@@ -194,43 +96,13 @@ END:
 		pop(%y)
 		pop(%x)
 		pop(%color)
-
 		addi %x, %x, 1
-
-
 		j LOOP
 	END:
-
 		pop(%xf)
 		pop(%y)
 		pop(%x)
 		pop(%color)
-.end_macro
-
-.macro PaintCol(%color, %x, %y, %yf)
-	LOOP:
-		push(%color)
-		push(%x)
-		push(%y)
-		push(%yf)
-		beq %y, %yf, END
-		PaintPixel(%color, %x, %y)
-		pop(%yf)
-		pop(%y)
-		pop(%x)
-		pop(%color)
-		
-		addi %y, %y, 1
-
-
-		j LOOP
-	END:
-		pop(%yf)
-		pop(%y)
-		pop(%x)
-		pop(%color)
-
-
 .end_macro
 
 #deve ser usado com registradores sX (tX nao funcionam)
@@ -245,43 +117,13 @@ END:
 	END:
 .end_macro
 
-.macro PrintPieceBlue(%x, %y)
-	li t0, 320
-	mul t0, %y, t0			##	Yi * 320
-	add t1, t0, %x 		## 	Yi*320 + Xi
-	li	t2, ScreenBg
-	add a1, t1, t2	## 	(Yi*320 + Xi + Endereço Inicial) = Inicio peça
-
-	li t3, endPiece
-	add a2, a1, t3
-	
-	addi a4, a1, 19
-	la a0, blue
-	addi a2, a2, 1
-LOOP:	bge a1, a2, END
-	lb a3, 0(a0)
-	sb a3, 0(a1)
-	beq a1, a4, SOMA320
-	j CONTINUE
-	SOMA320:
-		addi a1, a1, 301
-		addi a4, a4, 320
-	CONTINUE:
-		addi a0, a0, 4
-		addi a1, a1, 1
-		j LOOP
-END:
-.end_macro
-
-.macro PrintPieceBlue(%pos)
-	
+.macro PrintPiece(%pos, %type)
 	add a1, zero, %pos 
-	
 	li t3, endPiece
 	add a2, a1, t3
-	
 	addi a4, a1, 19
-	la a0, blue
+	#la a0, blue
+	add a0, zero, %type
 	addi a2, a2, 1
 LOOP:	bge a1, a2, END
 	lb a3, 0(a0)

@@ -44,17 +44,6 @@ Dama:.word 	32,		68,		-1,		0,
 #
 #push()
 #pop()
-#scanInt()
-#printInt()
-#scanChar()
-#printChar()
-#printString()
-#pause()
-#
-#
-#PaintColor()
-#PaintRegion(%color, %xi, %yi, %xf, %yf)
-#PrintBoard()
 ######################################################################################
 .macro push(%valor) ############# PUSH ##############
 	addi sp, sp, -4
@@ -64,103 +53,6 @@ Dama:.word 	32,		68,		-1,		0,
 .macro pop(%valor) ############# POP ##############
 	lw %valor, 0(sp)
 	addi sp, sp,4
-.end_macro
-
-.macro scanInt(%valor) ############# SCAN_INT ############## 
-	push(a7)
-	li  a7, 5        
-    	syscall 
-    	la  %valor, 0(a7)
-    	pop(a7)
-.end_macro
-
-.macro printInt(%valor) ############# PRINT_INT ##############
-	push(a7)
-	push(a0)
-	
-	li  a7, 1          
-    	mv a0, %valor
-    	syscall
-    	printString(Auxiliar)
-    	pop(a0)
-    	pop(a7)
-    	
-.end_macro
-
-.macro scanChar(%valor) ############# SCAN_CHAR ############## 
-	push(a7)
-	li  a7, 12           
-    	syscall
-    	la  %valor, 0(a7)
-    	pop(a7)
-.end_macro
-
-.macro printChar(%valor) ############# PRINT_CHAR ##############
-	push(a7)
-	push(a0)
-	li  a7,  11          
-    	mv a0, %valor
-    	syscall 	
-    	pop(a0)
-    	pop(a7)
-.end_macro
-
-.macro printString(%valor)	############# PRINT_STRING ##############
-	push(a7)
-	push(a0)	
-	li a7, 4
-	la a0, %valor
-	syscall	
-	pop(a0)
-    	pop(a7)
-.end_macro
-
-
-.macro pause(%valor) ############# pause ##############
-	push(a7)
-    	push(a0)	
-	li a7, 32
-	li a0, %valor
-	syscall	
-	pop(a0)
-    	pop(a7)
-.end_macro
-
-##Como usar
-# addi %reg, zero,RED
-# PaintColor(%reg)
-.macro PaintColor(%color)
-		li a0, ScreenBg
-		li a1, ScreenEnd
-LOOP:		beq a0, a1, END
-		add t2, zero, %color
-		sb t2, 0(a0)
-		addi a0, a0, 1
-		j LOOP
-END:
-.end_macro
-
-.macro PaintRegion(%color, %xi, %yi, %xf, %yf)
-		li t0, 320
-		mul t0, %yi, t0			##	Yi * 320
-		add t1, t0, %xi 		## 	Yi*320 + Xi
-		li	t2, ScreenBg
-		add a0, t1, t2	## 	Yi*320 + Xi + Endereço Inicial
-		
-		li t0, 320
-		mul t0, %yf, t0			##	Yi * 320
-		add t1, t0, %xf 		## 	Yi*320 + Xi
-		li	t2, ScreenEnd
-		add a1, t1, t2	## 	Yi*320 + Xi + Endereço Inicial
-		
-		#li a0, ScreenBg
-		#li a1, ScreenEnd
-LOOP:		beq a0, a1, END
-		add t2, zero, %color
-		sb t2, 0(a0)
-		addi a0, a0, 1
-		j LOOP
-END:
 .end_macro
 
 #deve ser usado com registradores sX ou aX (tX nao funcionam)
@@ -181,7 +73,6 @@ END:
 
 .end_macro
 
-
 .macro PaintLine(%color, %x, %y, %xf)
 	LOOP:
 		push(%color)
@@ -194,43 +85,13 @@ END:
 		pop(%y)
 		pop(%x)
 		pop(%color)
-
 		addi %x, %x, 1
-
-
 		j LOOP
 	END:
-
 		pop(%xf)
 		pop(%y)
 		pop(%x)
 		pop(%color)
-.end_macro
-
-.macro PaintCol(%color, %x, %y, %yf)
-	LOOP:
-		push(%color)
-		push(%x)
-		push(%y)
-		push(%yf)
-		beq %y, %yf, END
-		PaintPixel(%color, %x, %y)
-		pop(%yf)
-		pop(%y)
-		pop(%x)
-		pop(%color)
-		
-		addi %y, %y, 1
-
-
-		j LOOP
-	END:
-		pop(%yf)
-		pop(%y)
-		pop(%x)
-		pop(%color)
-
-
 .end_macro
 
 #deve ser usado com registradores sX (tX nao funcionam)
@@ -245,49 +106,18 @@ END:
 	END:
 .end_macro
 
-.macro PrintPieceBlue(%x, %y)
-	li t0, 320
-	mul t0, %y, t0			##	Yi * 320
-	add t1, t0, %x 		## 	Yi*320 + Xi
-	li	t2, ScreenBg
-	add a1, t1, t2	## 	(Yi*320 + Xi + Endereço Inicial) = Inicio peça
-
-	li t3, endPiece
-	add a2, a1, t3
-	
-	addi a4, a1, 19
-	la a0, blue
-	addi a2, a2, 1
-LOOP:	bge a1, a2, END
-	lb a3, 0(a0)
-	sb a3, 0(a1)
-	beq a1, a4, SOMA320
-	j CONTINUE
-	SOMA320:
-		addi a1, a1, 301
-		addi a4, a4, 320
-	CONTINUE:
-		addi a0, a0, 4
-		addi a1, a1, 1
-		j LOOP
-END:
-.end_macro
-
-.macro PrintPieceBlue(%pos)
-	
+.macro PrintPiece(%pos, %type)
 	add a1, zero, %pos 
-	
 	li t3, endPiece
 	add a2, a1, t3
-	
 	addi a4, a1, 19
-	la a0, blue
+	#la a0, blue
+	add a0, zero, %type
 	addi a2, a2, 1
 LOOP:	bge a1, a2, END
 	lb a3, 0(a0)
 	sb a3, 0(a1)
-	beq a1, a4, SOMA320
-	j CONTINUE
+	bne a1, a4, CONTINUE
 	SOMA320:
 		addi a1, a1, 301
 		addi a4, a4, 320
@@ -312,8 +142,7 @@ END:
 LOOP:	bge a1, a2, END
 	lb a3, 0(a0)
 	sb a3, 0(a1)
-	beq a1, a4, SOMA320
-	j CONTINUE
+	bne a1, a4, CONTINUE
 	SOMA320:
 		addi a1, a1, 301
 		addi a4, a4, 320
@@ -338,4 +167,169 @@ LOOP:	beq a1, a2, END
 	addi a1, a1, 1
 	j LOOP
 END:
+.end_macro
+
+#inicializa todas as posições de 
+.macro initPosicoes(%color)
+	add t1, %color, zero
+	li t0, A8
+	li t2,AddressA8
+	sw t0, 0(t2)
+	PrintPiece(t0, t1)
+
+	li t0, C8
+	li t2,AddressC8
+	sw t0, 0(t2)
+	PrintPiece(t0, t1)
+
+	li t0, E8
+	li t2,AddressE8
+	sw t0, 0(t2)
+	PrintPiece(t0, t1)
+
+	li t0, G8
+	li t2,AddressG8
+	sw t0, 0(t2)
+	PrintPiece(t0, t1)
+
+	li t0, B7
+	li t2,AddressB7
+	sw t0, 0(t2)
+	PrintPiece(t0, t1)
+
+	li t0, D7
+	li t2,AddressD7
+	sw t0, 0(t2)
+	PrintPiece(t0, t1)
+
+	li t0, F7
+	li t2,AddressF7
+	sw t0, 0(t2)
+	PrintPiece(t0, t1)
+
+	li t0, H7
+	li t2,AddressH7
+	sw t0, 0(t2)
+	PrintPiece(t0, t1)
+
+	li t0, A6
+	li t2,AddressA6
+	sw t0, 0(t2)
+	PrintPiece(t0, t1)
+
+	li t0, C6
+	li t2,AddressC6
+	sw t0, 0(t2)
+	PrintPiece(t0, t1)
+
+	li t0, E6
+	li t2,AddressE6
+	sw t0, 0(t2)
+	PrintPiece(t0, t1)
+
+	li t0, G6
+	li t2,AddressG6
+	sw t0, 0(t2)
+	PrintPiece(t0, t1)
+
+	li t0, B5
+	li t2,AddressB5
+	sw t0, 0(t2)
+	li t0, D5
+	li t2,AddressD5
+	sw t0, 0(t2)
+	li t0, F5
+	li t2,AddressF5
+	sw t0, 0(t2)
+	li t0, H5
+	li t2,AddressH5
+	sw t0, 0(t2)
+	li t0, A4
+	li t2,AddressA4
+	sw t0, 0(t2)
+	li t0, C4
+	li t2,AddressC4
+	sw t0, 0(t2)
+	li t0, E4
+	li t2,AddressE4
+	sw t0, 0(t2)
+
+	la t0, blue
+	bne t1, t0, RED
+	BLUE:
+		la t1, red
+		j CONTINUE
+	RED:
+		la t1, blue
+	CONTINUE:
+	li t0, B3
+	li t2,AddressB3
+	sw t0, 0(t2)
+	PrintPiece(t0, t1)
+
+	li t0, D3
+	li t2,AddressD3
+	sw t0, 0(t2)
+	PrintPiece(t0, t1)
+
+	li t0, F3
+	li t2,AddressF3
+	sw t0, 0(t2)
+	PrintPiece(t0, t1)
+
+	li t0, H3
+	li t2,AddressH3
+	sw t0, 0(t2)
+	PrintPiece(t0, t1)
+
+	li t0, A2
+	li t2,AddressA2
+	sw t0, 0(t2)
+	PrintPiece(t0, t1)
+
+	li t0, C2
+	li t2,AddressC2
+	sw t0, 0(t2)
+	PrintPiece(t0, t1)
+
+	li t0, E2
+	li t2,AddressE2
+	sw t0, 0(t2)
+	PrintPiece(t0, t1)
+
+	li t0, G2
+	li t2,AddressG2
+	sw t0, 0(t2)
+	PrintPiece(t0, t1)
+
+	li t0, B1
+	li t2,AddressB1
+	sw t0, 0(t2)
+	PrintPiece(t0, t1)
+
+	li t0, D1
+	li t2,AddressD1
+	sw t0, 0(t2)
+	PrintPiece(t0, t1)
+
+	li t0, F1
+	li t2,AddressF1
+	sw t0, 0(t2)
+	PrintPiece(t0, t1)
+
+	li t0, H1
+	li t2,AddressH1
+	sw t0, 0(t2)
+	PrintPiece(t0, t1)
+	END:	
+
+.end_macro
+
+#Registrador temporario na primeira entrada, registrador de saida na segunda
+.macro getPosicao(%userInput, %return)
+	add t0,zero, %userInput
+    slli t0, t0, 4
+    li t1, AddressBegin
+    add t0, t0, t1
+    lw %return, 0(t0)
 .end_macro

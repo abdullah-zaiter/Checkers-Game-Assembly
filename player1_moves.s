@@ -1,10 +1,12 @@
 .data
-	ally_pieces: 	.byte 0x40 0x48 0x50 0x58 0x24 0x2C 0x34 0x3C 0x00 0x08 0x10 0x18
-	enemy_pieces:	.byte 0x64 0xAC 0xB4 0xBC 0xC0 0xC8 0xD0 0xD8 0xE4 0xEC 0xF4 0xFC
+	#ally_pieces: 	.byte 0xA0 0xA8 0xB0 0xB8 0x64 0x6C 0x74 0x7C 0xE0 0xE8 0xF0 0xF8
+	#enemy_pieces:	.byte 0x04 0x0C 0x14 0x1C 0x20 0x28 0x30 0x38 0x44 0x4C 0x54 0x5C
+	ally_pieces: 	.byte 0xA0 0xA8 0xB0 0xB8 0x64 0x6C 0x74 0x7C 0xE0 0xE8 0xF0 0xF8
+	enemy_pieces:	.byte 0x84 0x0C 0x14 0x1C 0x20 0x28 0x30 0x38 0x44 0x4C 0x54 0x5C
 .text
 
 ##################################################################################################################################################
-############	Rotina de movimentaï¿½ï¿½o do jogador humano (tem que alterar pra botar na placa - ver systemv11.s -)
+############	Rotina de movimentação do jogador humano (tem que alterar pra botar na placa - ver systemv11.s -)
 ##################################################################################################################################################
 human_move:	addi	sp, sp, -4
 		sw	ra, 0(sp)
@@ -15,7 +17,7 @@ human_move:	addi	sp, sp, -4
 		li	a7, 5
 		ecall
 		or	t0, t0, a0
-		slli	t0, t0, 2	# Fim da leitura da posicao atual da peï¿½a (contido em t0)
+		slli	t0, t0, 2	# Fim da leitura da posicao atual da peça (contido em t0)
 		li	a7, 5
 		ecall
 		add	t1, a0, zero
@@ -35,7 +37,7 @@ human_move:	addi	sp, sp, -4
 		lw	t1, 4(sp)
 		addi	sp, sp, 8
 		beq	a0, zero, invalid_move
-		lb	t0, 0(a1)		# Carrega a posicao atual da peca da memoria (para saber se ï¿½ rainha)
+		lbu	t0, 0(a1)		# Carrega a posicao atual da peca da memoria (para saber se é rainha)
 		mv	t4, a1
 		mv	a0, t1
 		slli	a0, a0, 8
@@ -48,10 +50,10 @@ human_move:	addi	sp, sp, -4
 		lw	t1, 4(sp)
 		addi	sp, sp, 8
 		beq	a0, zero, invalid_move	# Se a0==0, os pontos nao estao em diagonal
-		li	t3, 1
-		beq	a1, t3, diag_adj	# Se a distancia em Y for 1, ï¿½ diagonalmente adjacente
-		addi	t3, t3, 1
-		beq	a1, t3, diag_adj2	# Se a distancia em Y for 2, ï¿½ diagonal pulando uma casa (possï¿½vel ataque ao inimigo)
+		li	t3, -1
+		beq	a1, t3, diag_adj	# Se a distancia em Y for 1, é diagonalmente adjacente
+		addi	t3, t3, -1
+		beq	a1, t3, diag_adj2	# Se a distancia em Y for 2, é diagonal pulando uma casa (possível ataque ao inimigo)
 		andi	t2, t0, 0x1
 		beq	t2, zero, invalid_move	# Se nao for rainha, a peca nao pode pular mais de duas casas na diagonal
 		j	verif_queen
@@ -80,8 +82,7 @@ diag_adj:	mv	a0, t1			# Rotina caso a posicao destino seja diagonalmente adjacen
 		sb	t0, 0(t4)		# Guarda em ally_pieces na posicao desejada
 		lw	ra, 0(sp)
 		addi	sp, sp, 4
-		#jr	ra
-		j EXIT
+		j EXIT_human_move
 diag_adj2:	andi	t2, t0, 0x1C				# Rotina caso a posicao destino seja diagonal pulando uma casa
 		andi	t3, t1, 0x1C
 		blt	t2, t3, soma1		# Se a peca pular para a direita (X1<X2) soma 1 em X para encontrar casa intermediaria, senao sub 1
@@ -95,7 +96,7 @@ diag_adj2:	andi	t2, t0, 0x1C				# Rotina caso a posicao destino seja diagonal pu
 		add	t3, t3, t2	# soma (1) ou (-1) para achar casa intermediaria (peca a ser atacada)
 		slli	t3, t3, 2
 		srli	t5, t5, 5
-		addi	t5, t5, 1
+		addi	t5, t5, -1
 		slli	t5, t5, 5
 		or	t3, t3, t5
 		mv	a0, t3
@@ -131,7 +132,7 @@ diag_adj2:	andi	t2, t0, 0x1C				# Rotina caso a posicao destino seja diagonal pu
 		addi	sp, sp, 8
 		bne	a0, zero, invalid_move	# Fim da checagem se posicao final esta vazia
 		
-		lb	t2, 0(t5)
+		lbu	t2, 0(t5)
 		ori	t2, t2, 0x2		# Mata a peca inimiga
 		sb	t2, 0(t5)
 		
@@ -139,9 +140,9 @@ diag_adj2:	andi	t2, t0, 0x1C				# Rotina caso a posicao destino seja diagonal pu
 		or	t1, t1, t2
 		sb	t1, 0(t4)
 		
-		j EXIT
+		j EXIT_human_move
 		
-verif_queen:	j EXIT				# Rotina caso a peca atual seja uma rainha (Falta implementar!!!!!)
+verif_queen:	j EXIT_human_move		# Rotina caso a peca atual seja uma rainha (Falta implementar!!!!!)
 
 
 ##################################################################################################################################################
@@ -167,9 +168,9 @@ not_found:	li	a0, 0
 exit_verif_vetor:	jr	ra			# descomentar para funcionar
 
 ##################################################################################################################################################
-############						    Verifica se as posicoes em 0(a0) e 1(a0) sï¿½o diagonais 
+############						    Verifica se as posicoes em 0(a0) e 1(a0) são diagonais 
 ############		                          recebe				###			    retorna	
-############	   a0 -> byte 0 contem a posicao atual, byte 1 contem posicao desejada	###     se (a0==0) nï¿½o ï¿½ diagonal, se (a0==1) ï¿½ diagonal
+############	   a0 -> byte 0 contem a posicao atual, byte 1 contem posicao desejada	###     se (a0==0) não é diagonal, se (a0==1) é diagonal
 ############	  									###		a1 = diferenca em y (y2-y1)
 ##################################################################################################################################################
 verif_diagonal:	andi	t2, a0, 0xFF
@@ -196,5 +197,7 @@ not_diagonal:	li	a0, 0
 exit_verif_diagonal:	jr	ra		# Descomentar para funcionar
 
 invalid_move:	##### MOSTRA MSG DE ERRO E REPETE TURNO ####
-		j	human_move
-EXIT:
+		#j	human_move
+EXIT_human_move:sw	ra, 0(sp)
+		addi	sp, sp, 4
+		#jr	ra

@@ -286,8 +286,7 @@ END:
 LOOP:	bge a1, a2, END
 	lb a3, 0(a0)
 	sb a3, 0(a1)
-	beq a1, a4, SOMA320
-	j CONTINUE
+	bne a1, a4, CONTINUE
 	SOMA320:
 		addi a1, a1, 301
 		addi a4, a4, 320
@@ -312,8 +311,7 @@ END:
 LOOP:	bge a1, a2, END
 	lb a3, 0(a0)
 	sb a3, 0(a1)
-	beq a1, a4, SOMA320
-	j CONTINUE
+	bne a1, a4, CONTINUE
 	SOMA320:
 		addi a1, a1, 301
 		addi a4, a4, 320

@@ -29,32 +29,65 @@ Name = ["A8", "C8", "E8", "G8",
         "B1", "D1", "F1", "H1"]
 
 AddressMemStack = 0xff200000
-AddressMemVector = [0x00000070, 0x00000072, 0x00000074, 0x00000076,
-                    0x00000061, 0x00000063, 0x00000065, 0x00000067,
-                    0x00000050, 0x00000052, 0x00000054, 0x00000056,
-                    0x00000041, 0x00000043, 0x00000045, 0x00000047,
-                    0x00000030, 0x00000032, 0x00000034, 0x00000036,
-                    0x00000021, 0x00000023, 0x00000025, 0x00000027,
-                    0x00000010, 0x00000012, 0x00000014, 0x00000016,
-                    0x00000001, 0x00000003, 0x00000005, 0x00000007]
+AddressMemVector = [0x00000700, 0x00000720, 0x00000740, 0x00000760,
+                    0x00000610, 0x00000630, 0x00000650, 0x00000670,
+                    0x00000500, 0x00000520, 0x00000540, 0x00000560,
+                    0x00000410, 0x00000430, 0x00000450, 0x00000470,
+                    0x00000300, 0x00000320, 0x00000340, 0x00000360,
+                    0x00000210, 0x00000230, 0x00000250, 0x00000270,
+                    0x00000100, 0x00000120, 0x00000140, 0x00000160,
+                    0x00000010, 0x00000030, 0x00000050, 0x00000070]
 
 
-def fileWrite(g, i):
-    
+def fileWrite(g, address,i):
+    if (i == 0):
+        file.write(".eqv AddressBegin 0xff200000" + "\n\n")
     file.write(".eqv "+ Name[i] + " " + g + "\n") 
+    file.write(".eqv " +"Address" + Name[i] + " " + address + "\n")
+
+
+def fileWrite2(g, address, i):
+    if ((i < 12) or (i>19)):
+        file2.write("li t0, " + Name[i] + "\n")
+        file2.write("li t2," + "Address" + Name[i] + "\n")
+        file2.write("sw t0, 0(t2)" + "\n")
+        file2.write("PrintPiece(t0, t1)" + "\n\n")
+        #print(Name[i])
+    elif(i == 19):
+        file2.write("la t0, blue" + "\n" +
+                    "bne t1, t0, RED" + "\n"
+                    "BLUE:" + "\n"
+                    "   la t1, red" + "\n"
+                    "   j CONTINUE" + "\n"
+                    "RED:" + "\n"
+                    "   la t1, blue" + "\n"+
+	                "CONTINUE:" + "\n")
+    else:
+        file2.write("li t0, " + Name[i] + "\n")
+        file2.write("li t2," + "Address" + Name[i] + "\n")
+        file2.write("sw t0, 0(t2)" + "\n")
+    #print (str(i) + "\n\n\n")
 
 def main():
     for i in range (len(Xs)):
         x = Xs[i]
         y = Ys[i]
         f = int(x)+(320*int(y))+4278190080
-        print(f)
+        #print(f)
         f= hex(f)
-        print(f)
-        fileWrite(f, i)
+        #print(f)
+        a = AddressMemStack + AddressMemVector[i]
+        a = hex(a)
+        fileWrite(f, a, i)
+        fileWrite2(f, a, i)
+        
 
 if __name__ == '__main__':
     file = open("mapping.s","w")
+    file2 = open("easyLife.s", "w")
+
     main()
+
+    file2.close()
     file.close()
 

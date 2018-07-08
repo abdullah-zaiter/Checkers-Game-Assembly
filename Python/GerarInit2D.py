@@ -29,6 +29,49 @@ def fileWrite(g, p,address, i):
     file.write(".eqv " + "piece" + Name[i] + " " + p + "\n")
     file.write(".eqv " + "AddressHash" + Name[i] + " " + address + "\n")
 
+
+def fileWrite2(i):
+    if(i == 0):
+        file2.write(
+            "addi sp, sp, -4" + "\n" +
+            "sw ra, 0(sp)" + "\n" +
+            "jal pushFunct" + "\n\n" +
+
+            "li t5, GREEN" + "\n" +
+            "\tli t6, RED" + "\n\n" +
+
+            "beq a2, t6, startGREEN  # se cor init = RED" + "\n" +
+            "j startRED" + "\n" +
+            "startGREEN:" + "\n" +
+            "\tli a2, GREEN" + "\n" +
+            "\tj continueTab" + "\n" +
+            "startRED:  # t1 continua verde, aliado = vermelho" + "\n" +
+            "\tli a2, RED" + "\n" +
+            "continueTab:" + "\n\n")
+
+    if ((i < 12) or (i > 19)):
+        file2.write("li a0, piece" + Name[i] +
+                    "#t0 = posicao de memoria visual" + "\n")
+        file2.write("li t2, Address" +
+                    Name[i] + "#t2 = posicao memoria hash" + "\n")
+        file2.write("sw a0, 0(t2)" + "\n")
+        file2.write("jal PrintPiece" + "\n\n")
+    elif(i == 19):
+        file2.write(
+            "beq a2, t6, turnGREEN  # se cor = RED =>" + "\n" +
+            "j REDdy" + "\n" +
+            "turnGREEN:" + "\n" +
+            "    \tli a2, GREEN" + "\n" +
+            "    \tj continueTab2" + "\n" +
+            "REDdy:" + "\n" +
+            "    \tli a2, RED" + "\n" +
+            "continueTab2:"+"\n\n"
+        )
+    if(i == 31):
+        file2.write(
+            "jal popFunct"+ "\n" +
+            "jr ra"+ "\n")
+
 def main():
     x = 0
     y = 0
@@ -52,6 +95,7 @@ def main():
         p = hex(p)
         fileWrite(q, p, a, i)
 
+        fileWrite2(i)
         print("\tName: "+Name[i]+"==> x: "+str(x) +"\ty: "+str(y)
               +"\taddressHash: "+a+
               "\t\taddBoardTiles: "+q +
@@ -62,34 +106,10 @@ def main():
 if __name__ == '__main__':
 
     file = open("mapping2D.s", "w")
-    #file2 = open("init2DMapeamento.s", "w")
+    file2 = open("init2DMapeamento.s", "w")
 
     main()
 
-    #file2.close()
+    file2.close()
     file.close()
 
-
-#def fileWrite2(g, address, i):
-#    if(i == 0):
-#        file2.write("add t1, a1, zero" + "\n")
-#    elif ((i < 12) or (i > 19)):
-#        file2.write("li a1, " + Name[i] + "\n")
-#        file2.write("li t2," + "Address" + Name[i] + "\n")
-#        file2.write("sw t0, 0(t2)" + "\n")
-#        file2.write("PrintCerto" + "\n\n")
-#        #print(Name[i])
-#    elif(i == 19):
-#        file2.write("la t0, blue" + "\n" +
-#                    "bne t1, t0, RED" + "\n"
-#                    "BLUE:" + "\n"
-#                    "   la t1, red" + "\n"
-#                    "   j CONTINUE" + "\n"
-#                    "RED:" + "\n"
-#                    "   la t1, blue" + "\n" +
-#                    "CONTINUE:" + "\n")
-#    else:
-#        file2.write("li t0, " + Name[i] + "\n")
-#        file2.write("li t2," + "Address" + Name[i] + "\n")
-#        file2.write("sw t0, 0(t2)" + "\n")
-#    #print (str(i) + "\n\n\n")

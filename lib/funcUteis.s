@@ -45,6 +45,7 @@ Dama:.word 	32,		68,		-1,		0,
 #push()
 #pop()
 ######################################################################################
+
 .macro push(%valor) ############# PUSH ##############
 	addi sp, sp, -4
 	sw %valor, 0(sp)
@@ -107,31 +108,53 @@ Dama:.word 	32,		68,		-1,		0,
 .end_macro
 
 .macro PrintPiece(%pos, %type)
-	add a1, zero, %pos 
-	li t3, endPiece
-	add a2, a1, t3
-	addi a4, a1, 19
-	#la a0, blue
-	add a0, zero, %type
-	addi a2, a2, 1
-LOOP:	bge a1, a2, END
-	lb a3, 0(a0)
-	sb a3, 0(a1)
-	bne a1, a4, CONTINUE
-	SOMA320:
-		addi a1, a1, 301
-		addi a4, a4, 320
-	CONTINUE:
-		addi a0, a0, 4
-		addi a1, a1, 1
-		j LOOP
+  add a1, zero, %pos 
+  li t3, endPiece
+  add a2, a1, t3
+  addi a4, a1, 19
+  #la a0, blue
+  add a0, zero, %type
+  addi a2, a2, 1
+LOOP:  bge a1, a2, END
+  lb a3, 0(a0)
+  sb a3, 0(a1)
+  bne a1, a4, CONTINUE
+  SOMA320:
+    addi a1, a1, 301
+    addi a4, a4, 320
+  CONTINUE:
+    addi a0, a0, 4
+    addi a1, a1, 1
+    j LOOP
 END:
 .end_macro
 
+#a0 = type(color)///a1 = pos/// 
+PrintCerto:
+	push(ra)
+		li t3, endPiece
+		add a2, a1, t3
+		addi a4, a1, 19
+		addi a2, a2, 1
+	LOOP_PrintCerto:	bge a1, a2, END_PrintCerto
+		lb a3, 0(a0)
+		sb a3, 0(a1)
+		bne a1, a4, CONTINUE_PrintCerto
+		SOMA320_PrintCerto:
+			addi a1, a1, 301
+			addi a4, a4, 320
+		CONTINUE_PrintCerto:
+			addi a0, a0, 4
+			addi a1, a1, 1
+			j LOOP_PrintCerto
+	END_PrintCerto:
+		pop(ra)
+		jr ra
+	
 
 #Imprime o tabuleiro
 .macro PrintBoard()
-	la a0, board2
+	la a0, board
 	li a1, ScreenBg
 	li a2, ScreenEnd
 	addi a2, a2, 1
@@ -143,6 +166,15 @@ LOOP:	beq a1, a2, END
 	addi a1, a1, 1
 	j LOOP
 END:
+.end_macro
+
+#Registrador temporario na primeira entrada, registrador de saida na segunda
+.macro getPosicao(%userInput, %return)
+	add t0,zero, %userInput
+    slli t0, t0, 4
+    li t1, AddressBegin
+    add t0, t0, t1
+    lw %return, 0(t0)
 .end_macro
 
 #inicializa todas as posições de 
@@ -300,16 +332,6 @@ END:
 	END:	
 
 .end_macro
-
-#Registrador temporario na primeira entrada, registrador de saida na segunda
-.macro getPosicao(%userInput, %return)
-	add t0,zero, %userInput
-    slli t0, t0, 4
-    li t1, AddressBegin
-    add t0, t0, t1
-    lw %return, 0(t0)
-.end_macro
-
 
 .macro THEEND()
     j ENDMAIN

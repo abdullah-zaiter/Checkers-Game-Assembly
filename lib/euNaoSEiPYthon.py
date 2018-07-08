@@ -47,11 +47,13 @@ def fileWrite(g, address,i):
 
 
 def fileWrite2(g, address, i):
-    if ((i < 12) or (i>19)):
-        file2.write("li t0, " + Name[i] + "\n")
+    if(i == 0):
+        file2.write("add a0, "+"%"+"color, zero" + "\n")
+    elif ((i < 12) or (i>19)):
+        file2.write("li a1, " + Name[i] + "\n")
         file2.write("li t2," + "Address" + Name[i] + "\n")
         file2.write("sw t0, 0(t2)" + "\n")
-        file2.write("PrintPiece(t0, t1)" + "\n\n")
+        file2.write("PrintCerto" + "\n\n")
         #print(Name[i])
     elif(i == 19):
         file2.write("la t0, blue" + "\n" +

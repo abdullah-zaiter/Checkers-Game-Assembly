@@ -201,7 +201,7 @@ invalid_move:	##### MOSTRA MSG DE ERRO E REPETE TURNO ####
 EXIT_human_move:sw	ra, 0(sp)
 		addi	sp, sp, 4
 		#jr	ra
-
+		#VOLTA PRA MAIN JOSEEEE
 
 PegaAsParada:
 	la t0, ally_pieces
@@ -218,11 +218,12 @@ PegaAsParada:
 		or t4, t4, t3 
 		getPosicao(t4, s5)
 		la t6, blue
-		PrintPiece(s5, t6)
+		
+		
+		#PrintPiece(s5, t6)
 	invalid:
 		addi t0, t0, 1
 		addi t1, t1, -1
 		j LoopPegaAsParada
 	SaiLoopPegaAsParada:
-		#pop(ra)
-		THEEND()
+		#VOLTA PRA MAIN JOSEEEEE

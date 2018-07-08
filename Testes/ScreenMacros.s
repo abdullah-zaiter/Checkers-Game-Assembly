@@ -2,6 +2,7 @@
 # Defines
 .include "../lib/SYSTEMv11.s"
 .include "../lib/funcUteis.s"
+.include "../lib/funcUteis2D.s"
 .include "../lib/param.s"
 .text
 #_____________________________________________________________________________________________

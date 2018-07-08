@@ -9,14 +9,11 @@
 	.eqv BoardBg 0xFF001914
 	.eqv BoardTileSize 25
 
+	#tamanho Peças
+	.eqv pieceSize 15
+
     .eqv SizePixels 80000 # depende de ScreenWidth e ScreenHeight
-	
-  #  BLACK:			.word	0x00000000 # BLACK
-  #  WHITE:			.word	0x00ffffff # WHITE
-  #  RED:		.word	0x00B22222 # RED
-  #  BLUE:			.word   0x00008B8B # BLUE
-  #  GREY:			.word   0x00696969 # GREY
-	
+		
 	# Cores
 	.eqv BLACK 0x00
 	.eqv WHITE 0xFF
@@ -26,6 +23,7 @@
 	.eqv PURPLE 0x42
 
 	.eqv GREEN 0x38
+	.eqv YELLOW	0x2f
 	.eqv DARKGREEN 0x08
 
 	.eqv BLUE 0xC0
@@ -39,7 +37,6 @@
 
 	
 	.eqv TRANSPARENT 0xc7
-
 
     .eqv _bmpAddress	0x10040
 

@@ -1,3 +1,5 @@
+
+
 .data
 .eqv _bmpAddress	0x10040	
 .eqv endPiece		0x00001553
@@ -96,15 +98,14 @@ Dama:.word 	32,		68,		-1,		0,
 .end_macro
 
 #deve ser usado com registradores sX (tX nao funcionam)
-.macro PaintSquare(%color, %x, %y, %yf)
-    add s5, zero, %x
-	LOOP:
-		beq %y, %yf, END
-    	PaintLine(%color, %x, %y, %yf)
-		addi %y, %y, 1 
-		add %x, zero, s5		
-		j LOOP
-	END:
+.macro PaintSquare(%pos, %size, %color)
+
+	li a0, %pos
+	li a1, %size
+	li a2, %color
+    
+	jal ra, PaintSquare
+    
 .end_macro
 
 .macro PrintPiece(%pos, %type)
@@ -337,3 +338,31 @@ END:
     j ENDMAIN
 .end_macro
     ENDMAIN: j ENDMAIN
+    
+
+#a0 = pos inicial do quadrado na memoria; a1 = tamanho do quadrado; a2 = cor
+PaintSquare:
+	add t0, a0, a1
+	mv t1, a1
+	li t2, -1
+	mul t2, t2, a1
+
+PaintSquare_Loop:	
+	beq t1, zero, PaintSquare_End
+	
+PaintSquare_LoopLine:
+	beq a0, t0, PaintSquare_JumpLine
+	sb a2, 0(a0)
+	addi a0, a0, 1
+	j PaintSquare_LoopLine
+	
+PaintSquare_JumpLine:
+	addi t0, t0, 320
+	add a0, t0, t2
+	addi t1, t1, -1
+	j PaintSquare_Loop
+	
+PaintSquare_End:
+	ret
+	
+	

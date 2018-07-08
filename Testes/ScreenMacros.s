@@ -1,8 +1,9 @@
-# Defines
-.include "lib/SYSTEMv11.s"
-.include "lib/funcUteis.s"
-.include "lib/parametros.s"
 
+# Defines
+.include "../lib/SYSTEMv11.s"
+.include "../lib/funcUteis.s"
+.include "../lib/param.s"
+.text
 #_____________________________________________________________________________________________
 	#Macro para debug
 	.macro printf(%num)
@@ -188,57 +189,4 @@ InsPieceEnd:
 .globl main
 main:
 	# Rotina de teste
-		PrintBoard
-		li a7, 1
-		li a0, 30
-		ecall
-		li t1, 100
-		li t2, 100	
-
-		li a0, 0
-		li a1, 50
-		li a2, BLACK
-		li a3, 100
-		li s3, 1
-		
-		#jal PrintCirculo
-
-		#Circle(20, t1, t2, WHITE)	
-		#InsertPiece(1, 1, BLACK)
-		#InsertPiece(2, 1, BLACK)
-		#InsertPiece(5, 2, BLACK)
-		#InsertPiece(9, 1, BLACK)
-		#InsertPiece(1, 5, BLACK)
-		#InsertPiece(6, 4, BLACK)
-		#InsertPiece(7, 6, BLACK)
-		#InsertPiece(2, 8, BLACK)
-		#InsertPiece(1, 4, BLACK)
-		
-#		Circle (14, 14, 45, s2)
-#		Circle (14, 14, 105, s2)
-#		Circle (14, 14, 165, s2)
-#		Circle (14, 14, 225, s2)
-#		Circle (14, 44, 15, s2)
-#		Circle (14, 44, 75, s2)
-#		Circle (14, 44, 135, s2)
-#		Circle (14, 44, 195, s2)
-#		Circle (14, 74, 45, s2)
-#		Circle (14, 74, 105, s2)
-#		Circle (14, 74, 165, s2)
-#		Circle (14, 74, 225, s2)
-#		White(s2)
-#		Circle (14, 225, 15, s2)
-#		Circle (14, 225, 75, s2)
-#		Circle (14, 225, 135, s2)
-#		Circle (14, 225, 195, s2)
-#		
-#		
-#		Circle (14, 195, 45, s2)
-#		Circle (14, 195, 105, s2)
-#		Circle (14, 195, 165, s2)
-#		Circle (14, 195, 225, s2)
-#		
-#		Circle (14, 165, 15, s2)
-#		Circle (14, 165, 75, s2)
-#		Circle (14, 165, 135, s2)
-#		Circle (14, 165, 195, s2)
+		PaintSquare(0xFF000C8A, 20, RED)

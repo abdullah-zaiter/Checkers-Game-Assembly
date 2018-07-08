@@ -1,5 +1,6 @@
 .data
 .eqv _bmpAddress	0x10040	
+	chars: .string "A", "B", "C", "D", "E", "F", "G", "H"
 #BLACK:			.word	0x00000000 # BLACK
 #WHITE:			.word	0x00ffffff # WHITE
 #	
@@ -85,7 +86,7 @@
 .macro PrintBoard()
 		li a3, 8#linhas
 		li a4, 8#colunas
-LOOP:		beq a3, zero, END
+LOOP:		beq a3, zero, PRINTCOORD
 LOOPLINE:	beq a4, zero, JUMPLINE
 		li t0, 2
 		add t1, a3, a4
@@ -126,6 +127,48 @@ PAINT_COLOR1:	li t0, BoardBg
 JUMPLINE:	addi a3, a3, -1
 		li a4, 8
 		j LOOP
+		
+	# Rotina para imprimir as coordenadas do tabuleiro
+PRINTCOORD:
+		li a7, 104	# rotina de imprimir string na tela
+		la a0, chars
+		li a1, 30
+		li a2, 8
+		li a3, WHITE
+		mv a4, a0
+		
+		li a5, 8
+PRINTCHARLOOP:	beq a5, zero, PRINTNUM		
+		jal exceptionHandling
+		
+		addi a4, a4, 2	#proxima letra
+		mv a0, a4	#o valor de a0 eh alterado na funcao de printar string
+		
+		addi a5, a5, -1
+		addi a1, a1, 25	# proxima posicao da letra
+		
+		j PRINTCHARLOOP
+
+PRINTNUM:
+		li a7, 101	# rotina de imprimir numero na tela
+		li a0, 1
+		li a1, 8
+		li a2, 30
+		li a3, WHITE
+		li a4, 9
+		li a5, 1
+		
+PRINTNUMLOOP:	beq a0, a4, END
+		jal exceptionHandling
+		
+		addi a5, a5, 1	# proximo numero impresso
+		mv a0, a5
+		
+		addi a2, a2, 25	#proxima posicao do numero
+		
+		j PRINTNUMLOOP
+		
+		
 END:
 .end_macro
 
@@ -157,5 +200,4 @@ PaintSquare_JumpLine:
 	
 PaintSquare_End:
 	ret
-	
 	

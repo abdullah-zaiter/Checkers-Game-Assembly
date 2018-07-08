@@ -42,10 +42,11 @@ AddressMemVector = [0x00000700, 0x00000720, 0x00000740, 0x00000760,
                     0x00000010, 0x00000030, 0x00000050, 0x00000070]
 
 
-def fileWrite(g, address, i):
+def fileWrite(g, p,address, i):
     if (i == 0):
         file.write(".eqv AddressBegin 0xff200000" + "\n\n")
     file.write(".eqv " + Name[i] + " " + g + "\n")
+    file.write(".eqv " + "piece" + Name[i] + " " + p + "\n")
     file.write(".eqv " + "Address" + Name[i] + " " + address + "\n")
 
 def fileWrite2(g, address, i):
@@ -77,12 +78,14 @@ def main():
         x = Xs[i]
         y = Ys[i]
         f = int(x)+(320*int(y))+4278190080#0xff000000
+        p = int(x+5)+(320*int(y+5))+4278190080#0xff000000
         #print(f)
-        f= hex(f)
+        f = hex(f)
+        p = hex(p)
         #print(f)
         a = AddressMemStack + AddressMemVector[i]
         a = hex(a)
-        fileWrite(f, a, i)
+        fileWrite(f, p, a, i)
         #fileWrite2(f, a, i)
         
 

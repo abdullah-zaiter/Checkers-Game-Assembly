@@ -1,4 +1,3 @@
-
 # Defines
 .include "../lib/SYSTEMv11.s"
 .include "../lib/funcUteis.s"

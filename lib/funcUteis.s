@@ -11,6 +11,34 @@ WHITE:			.word	0x00ffffff # WHITE
 RED:		.word	0x00B22222 # RED
 BLUE:			.word   0x00008B8B # BLUE
 GREY:			.word   0x00696969 # GREY
+
+#           X   	Y   	Cor 	EH_DAMA?
+Dama:.word 	32,		68,		-1,		0,
+	     	32,		84,		-1,		0,
+	      	32,		100,	-1,		0,
+	      	32,		116,	-1,		0,
+	      	40,		60,		-1,		0,
+	      	40,		76,		-1,		0,
+	      	40, 	92,		-1,		0,
+	      	40, 	108, 	-1, 	0,
+	      	48, 	68, 	-1, 	0,
+	      	48, 	84, 	-1, 	0,
+	      	48, 	100, 	-1, 	0,
+	      	48, 	116, 	-1, 	0,     #FIM DO PRIMEIRO JOGADOR
+	      	  	
+	      	72, 	60, 	1, 		0,
+	      	72, 	76, 	1, 		0,
+	      	72, 	92, 	1, 		0,
+	      	72, 	108, 	1, 		0,
+	      	80, 	68, 	1, 		0,
+	      	80, 	84, 	1, 		0,
+	      	80, 	100, 	1, 		0,
+	      	80, 	116, 	1, 		0,
+	      	88, 	60, 	1, 		0,
+	      	88, 	76, 	1, 		0,
+	      	88, 	92, 	1, 		0,
+	      	88, 	108, 	1, 		0      #FIM DO SEGUNDO JOGADOR   	      		      	   	      	   	      		      	   	      	          		      	   	      	   	      		      	   	      	    
+
 .text
 ######################################################################################
 #
@@ -19,7 +47,6 @@ GREY:			.word   0x00696969 # GREY
 #push()
 #pop()
 ######################################################################################
-
 .macro push(%valor) ############# PUSH ##############
 	addi sp, sp, -4
 	sw %valor, 0(sp)
@@ -80,74 +107,88 @@ GREY:			.word   0x00696969 # GREY
     
 .end_macro
 
+.macro PaintSquareReg(%pos, %size, %color)
+
+	mv a0, %pos
+	li a1, %size
+	li a2, %color
+    
+	jal ra, PaintSquare
+    
+.end_macro
+
 .macro PrintPiece(%pos, %type)
-  add a1, zero, %pos 
-  li t3, endPiece
-  add a2, a1, t3
-  addi a4, a1, 19
-  #la a0, blue
-  add a0, zero, %type
-  addi a2, a2, 1
-LOOP:  bge a1, a2, END
-  lb a3, 0(a0)
-  sb a3, 0(a1)
-  bne a1, a4, CONTINUE
-  SOMA320:
-    addi a1, a1, 301
-    addi a4, a4, 320
-  CONTINUE:
-    addi a0, a0, 4
-    addi a1, a1, 1
-    j LOOP
+	add a1, zero, %pos 
+	li t3, endPiece
+	add a2, a1, t3
+	addi a4, a1, 19
+	#la a0, blue
+	add a0, zero, %type
+	addi a2, a2, 1
+LOOP:	bge a1, a2, END
+	lb a3, 0(a0)
+	sb a3, 0(a1)
+	bne a1, a4, CONTINUE
+	SOMA320:
+		addi a1, a1, 301
+		addi a4, a4, 320
+	CONTINUE:
+		addi a0, a0, 4
+		addi a1, a1, 1
+		j LOOP
 END:
 .end_macro
 
-#a0 = type(color)///a1 = pos/// 
-PrintCerto:
-	push(ra)
-		li t3, endPiece
-		add a2, a1, t3
-		addi a4, a1, 19
-		addi a2, a2, 1
-	LOOP_PrintCerto:	bge a1, a2, END_PrintCerto
-		lb a3, 0(a0)
-		sb a3, 0(a1)
-		bne a1, a4, CONTINUE_PrintCerto
-		SOMA320_PrintCerto:
-			addi a1, a1, 301
-			addi a4, a4, 320
-		CONTINUE_PrintCerto:
-			addi a0, a0, 4
-			addi a1, a1, 1
-			j LOOP_PrintCerto
-	END_PrintCerto:
-		pop(ra)
-		jr ra
-	
 
 #Imprime o tabuleiro
 .macro PrintBoard()
-	la a0, board
-	li a1, ScreenBg
-	li a2, ScreenEnd
-	addi a2, a2, 1
-	
-LOOP:	beq a1, a2, END
-	lb a3, 0(a0)
-	sb a3, 0(a1)
-	addi a0, a0, 4
-	addi a1, a1, 1
-	j LOOP
+		li a3, 8
+		li a4, 8
+LOOP:		beq a3, zero, END
+LOOPLINE:	beq a4, zero, JUMPLINE
+		li t0, 2
+		add t1, a3, a4
+		rem t0, t1, t0
+		addi a4, a4, -1
+		beq t0, zero, PAINT_COLOR1
+		
+		li t0, BoardBg
+		li t1, BoardTileSize
+		mul t1, t1, a4
+		add t0, t0, t1
+		
+		li t1, BoardTileSize
+		mul t3, t1, a3
+		sub t1, t3, t1
+		li t2, 320
+		mul t1, t1, t2
+		add t0, t0, t1
+		
+		PaintSquareReg(t0, BoardTileSize, LIGHTBROWN)
+		j LOOPLINE
+		
+PAINT_COLOR1:	li t0, BoardBg
+		li t1, BoardTileSize
+		mul t1, t1, a4
+		add t0, t0, t1
+		
+		li t1, BoardTileSize
+		mul t3, t1, a3
+		sub t1, t3, t1
+		li t2, 320
+		mul t1, t1, t2
+		add t0, t0, t1
+		
+		PaintSquareReg(t0, BoardTileSize, DARKBROWN)
+		j LOOPLINE
+		
+JUMPLINE:	addi a3, a3, -1
+		li a4, 8
+		j LOOP
 END:
-.end_macro
-
-#Registrador temporario na primeira entrada, registrador de saida na segunda
-.macro getPosicao(%userInput, %return)
-	add t0,zero, %userInput
-    slli t0, t0, 4
-    li t1, AddressBegin
-    add t0, t0, t1
-    lw %return, 0(t0)
+		
+		
+	
 .end_macro
 
 #inicializa todas as posições de 
@@ -305,6 +346,16 @@ END:
 	END:	
 
 .end_macro
+
+#Registrador temporario na primeira entrada, registrador de saida na segunda
+.macro getPosicao(%userInput, %return)
+	add t0,zero, %userInput
+    slli t0, t0, 4
+    li t1, AddressBegin
+    add t0, t0, t1
+    lw %return, 0(t0)
+.end_macro
+
 
 .macro THEEND()
     j ENDMAIN

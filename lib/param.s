@@ -1,15 +1,13 @@
    .data
     # Limites da tela
 	.eqv ScreenBg 0xFF000000
-	.eqv MinusBg 0x00FFFFFF
 	.eqv ScreenEnd 0xFF012C00
 	.eqv ScreenHeight 240
 	.eqv ScreenWidth 320
 	
 	# Limites do tabuleiro
-	.eqv BoardBg 0xFF000C8A
-	.eqv BoardSize 220
-	.eqv BoardEnd 0xFF012066
+	.eqv BoardBg 0xFF001914
+	.eqv BoardTileSize 25
 
     .eqv SizePixels 80000 # depende de ScreenWidth e ScreenHeight
 	

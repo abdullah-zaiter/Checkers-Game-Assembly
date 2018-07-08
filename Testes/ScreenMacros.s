@@ -1,3 +1,4 @@
+
 # Defines
 .include "../lib/SYSTEMv11.s"
 .include "../lib/funcUteis.s"
@@ -12,54 +13,6 @@
 	.end_macro
 #_____________________________________________________________________________________________
 	# Macro para desenhar o tabuleiro
-	.macro 	PrintBoard
-		li t0, ScreenBg
-		li t3, ScreenHeight
-		li t4, ScreenWidth
-
-		li t1, 8
-		div t2, t4, t1		# t2 = numero de colunas do "quadrado"
-		div t1, t3, t1		# t1 = numero de linhas do "quadrado"
-		
-		blt t1, t2, SELECT1
-		mv t1, t2
-		j SELECT2
-SELECT1:	mv t2, t1
-SELECT2:
-
-		li t2, 8
-		mul t2, t2, t1		# t2 = largura do tabuleiro
-		
-
-		li t3, ScreenEnd
-		addi t0, t0, -1		# Como a primeira parte do loop � adicionar 1 a t0, para pegar a primeira posicao inicial se subtrai 1 antes de entrar no loop
-BOARD_LOOP:	addi t0, t0, 1		# Faz t0 ir para a proxima posicao de memoria
-		bge t0, t3, END_BOARD	# Checa se t0 chegou ao final da tela
-		GetScreenPos(t0, t5, t4)
-		
-		bge t5, t2, MENU	# Checa se esta nos limites de altura do tabuleiro
-		bge t4, t2, MENU	# Checa se esta nos limites de largura do tabuleiro
-		
-		div t5, t5, t1		# t5 = qual posicao em linha esta
-		div t4, t4, t1		# t4 = qual posicao em coluna esta
-
-		add t5, t5, t4		
-		li t4, 2
-		rem t5, t5, t4		# checa se t5+t4 eh impar (1) ou par (0)
-		beq t5, zero, PAINT_COLOR1
-		li t4, DARKBROWN
-		sb t4,0(t0)
-		j BOARD_LOOP
-PAINT_COLOR1:	li t4, LIGHTBROWN
-		sb t4,0(t0)
-		j BOARD_LOOP
-		
-MENU:		li t4, BLUE
-		sb t4, 0(t0)
-		j BOARD_LOOP
-		
-END_BOARD:
-	.end_macro
 
 #___________________________________________________________________________________________
 	.macro GetScreenPos(%pos, %regLine, %regCol)
@@ -188,4 +141,4 @@ InsPieceEnd:
 .globl main
 main:
 	# Rotina de teste
-		PaintSquare(0xFF000C8A, 20, RED)
+		PrintBoard()

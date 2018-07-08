@@ -1,13 +1,12 @@
 
 	li a7, 12
-	li t0, 48
+	li s0, 0xFFFFFFCF
 	jal exceptionHandling
-	sub t0, a0, t0
-	addi t0, t0, 0xFFFFFFFF
-	li t1, 0xFFFFFF9F
+	add s0, a0, s0
+	li s1, 0xFFFFFF9F
 	li a7, 12
 	jal exceptionHandling
-	add t1 , a0, t1
+	add s1 , a0, s1
 	j exit 
 .include "lib/SYSTEMv11.s"
-exit:
+exit:	j exit

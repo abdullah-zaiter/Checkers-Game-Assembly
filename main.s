@@ -16,7 +16,6 @@ main: j main1
 .include "lib/init2DMapeamento.s"
 .include "lib/SoundMacros.s"
 
-
 .text
 # Limites da tela
 main1:

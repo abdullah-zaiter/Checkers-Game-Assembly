@@ -1,6 +1,6 @@
 #Instrumentos
 .eqv PIANO 0
-.eqv BRASS 58
+.eqv BRASS 56
 .eqv TESTE 58
 .eqv CHEERS 126
 
@@ -92,11 +92,14 @@
 
 #Macros
 .macro Sound(%note, %duration, %instrument, %volume)
-	li a7, 33
+	li a7, 31
 	li a0, %note
 	li a1, %duration
 	li a2, %instrument
 	li a3, %volume
+	jal exceptionHandling
+	li a7, 32
+	addi a0, a1, -50
 	jal exceptionHandling
 .end_macro
 
@@ -107,55 +110,45 @@
 .macro LoseMusic()
 	Sound(TONE_B5, 500, PIANO, 120)
 	Sound(TONE_AS5, 500, PIANO, 120)
-	Sound(TONE_DS5, 2400, PIANO, 120)
-	
-	Sound(TONE_GS5, 600, PIANO, 120)
-	Sound(TONE_B5, 600, PIANO, 120)
-	Sound(TONE_CS6, 1500, PIANO, 120)
-	Sound(TONE_GS5, 2100, PIANO, 120)
-	
-	Sound(TONE_B5, 1200, PIANO, 120)
-	
-	Sound(TONE_AS5, 600, PIANO, 120)
-	Sound(TONE_B5, 600, PIANO, 120)
-	Sound(TONE_CS6, 600, PIANO, 120)
-	Sound(TONE_FS5, 600, PIANO, 120)
-	Sound(TONE_DS6, 2100, PIANO, 120)
-	
-	Sound(TONE_CS6, 1800, PIANO, 120)
+	Sound(TONE_DS5, 1800, PIANO, 120)
 .end_macro
 	
 .macro JurassicParkMusic()
-	Sound(TONE_AS4, 500, BRASS, 100)
-	Sound(TONE_F5, 900, BRASS, 120)
+	Sound(TONE_AS4, 500, TESTE, 100)
+	Sound(TONE_F5, 900, TESTE, 120)
 	
-	Sound(TONE_AS4, 500, BRASS, 100)
-	Sound(TONE_G5, 900, BRASS, 120)
+	Sound(TONE_AS4, 500, TESTE, 100)
+	Sound(TONE_G5, 900, TESTE, 120)
 	
-	Sound(TONE_G5, 250, BRASS, 120)
-	Sound(TONE_A5, 250, BRASS, 120)
-	Sound(TONE_AS5, 750, BRASS, 120)
+	Sound(TONE_G5, 250, TESTE, 120)
+	Sound(TONE_A5, 250, TESTE, 120)
+	Sound(TONE_AS5, 750, TESTE, 120)
 	
-	Sound(TONE_AS5, 250, BRASS, 120)
-	Sound(TONE_A5, 500, BRASS, 120)
-	Sound(TONE_F5, 500, BRASS, 120)
-	Sound(TONE_G5, 1250, BRASS, 120)
+	Sound(TONE_AS5, 250, TESTE, 120)
+	Sound(TONE_A5, 500, TESTE, 120)
+	Sound(TONE_F5, 500, TESTE, 120)
+	Sound(TONE_G5, 1250, TESTE, 120)
 	
-	Sound(TONE_AS5, 500, BRASS, 120)
-	Sound(TONE_A5, 500, BRASS, 120)
-	Sound(TONE_F5, 500, BRASS, 120)
-	Sound(TONE_FS5, 750, BRASS, 120)
+	Sound(TONE_AS5, 500, TESTE, 120)
+	Sound(TONE_A5, 500, TESTE, 120)
+	Sound(TONE_F5, 500, TESTE, 120)
+	Sound(TONE_FS5, 750, TESTE, 120)
 	
-	Sound(TONE_D5, 400, BRASS, 120)
-	Sound(TONE_G5, 250, BRASS, 120)
-	Sound(TONE_A5, 250, BRASS, 120)
-	Sound(TONE_AS5, 400, BRASS, 120)
-	Sound(TONE_AS4, 750, BRASS, 120)
+	Sound(TONE_D5, 400, TESTE, 120)
+	Sound(TONE_G5, 250, TESTE, 120)
+	Sound(TONE_A5, 250, TESTE, 120)
+	Sound(TONE_AS5, 400, TESTE, 120)
+	Sound(TONE_AS4, 750, TESTE, 120)
 	
-	Sound(TONE_C5, 400, BRASS, 120)
-	Sound(TONE_D5, 400, BRASS, 120)
-	Sound(TONE_D5, 750, BRASS, 120)
+	Sound(TONE_C5, 400, TESTE, 120)
+	Sound(TONE_D5, 400, TESTE, 120)
+	Sound(TONE_D5, 750, TESTE, 120)
 	
-	Sound(TONE_CS5, 1000, BRASS, 120)
+	Sound(TONE_CS5, 1000, TESTE, 120)
 .end_macro
 	
+main:	
+	JurassicParkMusic()
+j EXIT
+.include "SYSTEMv11.s"
+EXIT:

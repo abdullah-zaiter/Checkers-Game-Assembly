@@ -20,7 +20,7 @@ main: j main1
 .text
 # Limites da tela
 main1:
-    jal MainMenu
+    #jal MainMenu
     
 	JurassicParkMusic()
     jal PrintBackGround

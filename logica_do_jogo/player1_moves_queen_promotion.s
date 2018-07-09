@@ -19,30 +19,34 @@ human_move:
 		#li	a7, 5	
 		#ecall
 		li a7, 12
-		jal exceptionHandling
 		li t5, 0xFFFFFFCF
+		li s4, 0xFFFFFFCF
+		jal exceptionHandling
 		add a0, a0, t5 #a0 = 0x0000000y
-
+		mv s3, a0
 		add	t0, a0, zero
 		slli	t0, t0, 3
 		
 		#li	a7, 5
 		#ecall
 		li a7, 12
-		jal exceptionHandling
 		li t6, 0xFFFFFF9F
+		li s4, 0xFFFFFF9F
+		jal exceptionHandling
 		add a0 , a0, t6	#a1 = 0x0000000x
-
+		mv s3, a0
 		or	t0, t0, a0
 		slli	t0, t0, 2	# Fim da leitura da posicao atual da pe�a (contido em t0)
 		
 		#li	a7, 5
 		#ecall
 		li a7, 12
-		jal exceptionHandling
 		li t5, 0xFFFFFFCF
+		li s4, 0xFFFFFFCF
+		jal exceptionHandling
+		
 		add a0, a0, t5 #a0 = 0x0000000y
-
+		mv s3, a0
 
 		add	t1, a0, zero
 		slli	t1, t1, 3
@@ -50,10 +54,11 @@ human_move:
 		#li	a7, 5
 		#ecall
 		li a7, 12
-		jal exceptionHandling
 		li t6, 0xFFFFFF9F
+		li s4, 0xFFFFFF9F
+		jal exceptionHandling
 		add a0 , a0, t6	#a1 = 0x0000000x
-
+		mv s3, a0
 		or	t1, t1, a0
 		slli	t1, t1, 2	# Fim da leitura da posicao desejada da peca (contido em t1)
 	################################# FIM da primeira parte #####################################

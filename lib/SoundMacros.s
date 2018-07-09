@@ -92,14 +92,11 @@
 
 #Macros
 .macro Sound(%note, %duration, %instrument, %volume)
-	li a7, 31
+	li a7, 33
 	li a0, %note
 	li a1, %duration
 	li a2, %instrument
 	li a3, %volume
-	jal exceptionHandling
-	li a7, 32
-	addi a0, a1, -50
 	jal exceptionHandling
 .end_macro
 
@@ -163,7 +160,7 @@
 .end_macro
 	
 main:	
-	LoseMusic()
+	JurassicParkMusic()
 j EXIT
 .include "SYSTEMv11.s"
 EXIT:

@@ -131,8 +131,51 @@ PRINTNUMLOOP:	beq a5, zero, END
 END:
 .end_macro
 
+#________________________________________________________________________________________________________________
+MainMenu:
+	mv a4, ra
+	li a0, ScreenBg
+	li a1, ScreenEnd
+	li a2, BROWN
+			
+MainMenu_PAINT:
+	beq a0, a1, MainMenu_MESSAGES
+	sb a2, 0(a0)
+	addi a0, a0, 1
+	j MainMenu_PAINT
 
-
+MainMenu_MESSAGES:
+	
+	li a7, 104
+	la a0, mainMenuStrings
+	mv a4, a0
+	li a1, 100
+	li a2, 15
+	li a3, WHITE
+	jal exceptionHandling	# Printa "Checkers Game"
+	
+	addi a4, a4, 14
+	mv a0, a4
+	addi a2, a2, 45
+	addi a1, a1, -10
+	jal exceptionHandling # Printa "Escolha o nivel:"
+	
+	
+	addi a4, a4, 17
+	mv a0, a4
+	addi a2, a2, 30
+	addi a1, a1, 35
+	jal exceptionHandling # Printa "nivel 1"
+	
+	
+	addi a4, a4, 8
+	mv a0, a4
+	addi a2, a2, 20
+	jal exceptionHandling # Printa "nivel 2"
+	
+	mv ra, a4
+	ret
+#________________________________________________________________________________________________________________
 #a0 = pos inicial do quadrado na memoria
 #a1 = tamanho do quadrado
 #a2 = cor
@@ -164,4 +207,5 @@ PaintSquare_JumpLine:
 PaintSquare_End:
 	jal popFunct
     jr ra
+	
 	

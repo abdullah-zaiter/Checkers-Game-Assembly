@@ -139,6 +139,7 @@ END_PrintBoard:
 
 #________________________________________________________________________________________________________________
 MainMenu:
+	
 	mv a4, ra
 	li a0, ScreenBg
 	li a1, ScreenEnd
@@ -180,7 +181,7 @@ MainMenu_MESSAGES:
 	jal exceptionHandling # Printa "nivel 2"
 	
 	mv ra, a4
-	ret
+	jr ra
 #________________________________________________________________________________________________________________
 #a0 = pos inicial do quadrado na memoria
 #a1 = tamanho do quadrado

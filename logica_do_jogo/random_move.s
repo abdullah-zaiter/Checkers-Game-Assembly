@@ -8,7 +8,7 @@
 	addi	sp, sp, 4
 .end_macro
 ##################################################################################################################################################
-############					Rotina de movimentação aleatoria do BOT 
+############					Rotina de movimentaï¿½ï¿½o aleatoria do BOT 
 ##################################################################################################################################################
 random_move: 	push(ra)
 		li	a7, 41
@@ -56,5 +56,5 @@ casa_vazia:	andi	t6, t6, 0x3		# Verifica se eh rainha
 		
 invalid_Rmove:	jal	zero, random_move
 Exit_Random_Move:	pop(ra)
-		.include "verif_vetor.s"
+		#.include "verif_vetor.s"
 		

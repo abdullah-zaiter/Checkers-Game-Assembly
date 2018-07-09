@@ -8,9 +8,14 @@
 	addi	sp, sp, 4
 .end_macro
 ##################################################################################################################################################
-############					Rotina de movimentação aleatoria do BOT 
+############					Rotina de movimentaï¿½ï¿½o aleatoria do BOT 
 ##################################################################################################################################################
-random_move: 	push(ra)
+random_move: 	
+		
+		addi sp, sp, -4
+    	sw ra, 0(sp)
+		
+		push(ra)
 		li	a7, 41
 		ecall			# a0 recebe numero random
 		li	t0, 12		
@@ -40,13 +45,14 @@ random_move: 	push(ra)
 		slli	t5, t3, 2	# t5 possui posicao desejada (a ser analisada)
 		mv	a0, t5
 		la	a1, enemy_pieces
-		jal	verif_vetor
+		jal	verif_vetor_rand
 		bne	a0, zero, invalid_Rmove	# Se tem peca amiga (do BOT) no espaco destino, move eh invalido
 		mv	a0, t5
 		la	a1, ally_pieces		# Verifica se tem peca inimiga na casa de destino
-		jal	verif_vetor
+		jal	verif_vetor_rand
 		beq	a0, zero, casa_vazia	# Se nao houver peca amiga nem inimiga na posicao desejada, substitui a posicao da peca
 		pop(t0)				# Se houver peca inimiga, verifica se eh possivel comer ela
+
 		andi	t1, t5, 0x1C
 		srli	t1, t1, 2
 		add	t1, t1, t0		# t1 <- X+R2
@@ -58,12 +64,12 @@ random_move: 	push(ra)
 		srli	t2, t2, 2		
 		mv	a0, t2
 		la	a1, enemy_pieces
-		jal	verif_vetor		# Verifica se possui peça do BOT na segunda posição da diagonal
+		jal	verif_vetor_rand		# Verifica se possui peï¿½a do BOT na segunda posiï¿½ï¿½o da diagonal
 		bne	a0, zero, invalid_Rmove
 		mv	a0, t2
 		la	a1, ally_pieces
-		jal	verif_vetor
-		bne	a0, zero, invalid_Rmove	# Se há peça na segunda casa diagonal, movimento eh invalido
+		jal	verif_vetor_rand
+		bne	a0, zero, invalid_Rmove	# Se hï¿½ peï¿½a na segunda casa diagonal, movimento eh invalido
 		lbu	t0, 0(t4)
 		andi	t0, t0, 0x3
 		or	t5, t5, t0
@@ -76,6 +82,11 @@ casa_vazia:	andi	t6, t6, 0x3		# Verifica se eh rainha
 		j	Exit_Random_Move
 		
 invalid_Rmove:	jal	zero, random_move
-Exit_Random_Move:	pop(ra)
+Exit_Random_Move:	
+		pop(ra)
 		.include "verif_vetor.s"
+		lw	ra, 0(sp)
+		addi	sp, sp, 4
+    	jr ra
+
 		

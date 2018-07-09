@@ -11,7 +11,6 @@
 human_move:	
 		addi sp, sp, -4
     	sw ra, 0(sp)
-    	#jal pushFunct
 
 		addi	sp, sp, -4
 		sw	ra, 0(sp)
@@ -230,10 +229,10 @@ exit_verif_diagonal:	jr	ra		# Descomentar para funcionar
 
 invalid_move:	##### MOSTRA MSG DE ERRO E REPETE TURNO ####
 		#j	human_move
-EXIT_human_move:sw	ra, 0(sp)
+EXIT_human_move:
+		lw	ra, 0(sp)
 		addi	sp, sp, 4
-		#jal popFunct
-    	jr ra
+		jr ra
 		
 
 

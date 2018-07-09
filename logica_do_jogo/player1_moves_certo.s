@@ -1,5 +1,5 @@
 .data
-	ally_pieces: 	.byte 0xA0 0xA8 0xB0 0xB8 0x64 0x6C 0x74 0x7C 0xE0 0xE8 0xF0 0xF8
+	ally_pieces: 	.byte 0xA0 0xA8 0xB0 0xB8 0xC4 0xCC 0xD4 0xDC 0xE0 0xE8 0xF0 0xF8
 	enemy_pieces:	.byte 0x04 0x0C 0x14 0x1C 0x20 0x28 0x30 0x38 0x44 0x4C 0x54 0x5C
 	#ally_pieces: 	.byte 0xA0 0xA8 0xB0 0xB8 0x64 0x6C 0x74 0x7C 0xE0 0xE8 0xF0 0xF8
 	#enemy_pieces:	.byte 0x84 0x0C 0x14 0x1C 0x20 0x28 0x30 0x38 0x44 0x4C 0x54 0x5C
@@ -11,24 +11,51 @@
 human_move:	
 		addi sp, sp, -4
     	sw ra, 0(sp)
-    	jal pushFunct
+    	#jal pushFunct
 
 		addi	sp, sp, -4
 		sw	ra, 0(sp)
-		li	a7, 5	
-		ecall
+		
+		#li	a7, 5	
+		#ecall
+		li a7, 12
+		jal exceptionHandling
+		li t5, 0xFFFFFFCF
+		add a0, a0, t5 #a0 = 0x0000000y
+
 		add	t0, a0, zero
 		slli	t0, t0, 3
-		li	a7, 5
-		ecall
+		
+		#li	a7, 5
+		#ecall
+		li a7, 12
+		jal exceptionHandling
+		li t6, 0xFFFFFF9F
+		add a0 , a0, t6	#a1 = 0x0000000x
+
 		or	t0, t0, a0
 		slli	t0, t0, 2	# Fim da leitura da posicao atual da pe�a (contido em t0)
-		li	a7, 5
-		ecall
+		
+		#li	a7, 5
+		#ecall
+		li a7, 12
+		jal exceptionHandling
+		li t5, 0xFFFFFFCF
+		add a0, a0, t5 #a0 = 0x0000000y
+
+
 		add	t1, a0, zero
 		slli	t1, t1, 3
-		li	a7, 5
-		ecall
+		
+		#li	a7, 5
+		#ecall
+		li a7, 12
+		jal exceptionHandling
+		li t6, 0xFFFFFF9F
+		add a0 , a0, t6	#a1 = 0x0000000x
+
+
+
 		or	t1, t1, a0
 		slli	t1, t1, 2	# Fim da leitura da posicao desejada da peca (contido em t1)
 	################################# FIM da primeira parte #####################################
@@ -205,39 +232,8 @@ invalid_move:	##### MOSTRA MSG DE ERRO E REPETE TURNO ####
 		#j	human_move
 EXIT_human_move:sw	ra, 0(sp)
 		addi	sp, sp, 4
-		jal popFunct
+		#jal popFunct
     	jr ra
 		
 
 
-
-#PegaAsParada:
-#	
-#	addi sp, sp, -4
-#    sw ra, 0(sp)
-#    jal pushFunct
-#	
-#	la t0, ally_pieces
-#	li t1, 12
-#	LoopPegaAsParada: beq t1, zero, SaiLoopPegaAsParada 
-#		lbu t2, 0(t0)
-#		andi t3, t2, 0x2
-#		bne t3, zero, invalid
-#		andi t3, t2, 0x1C
-#		srli t3, t3, 2
-#		andi t4, t2, 0xE0
-#		srli t4, t4, 5
-#		slli t4, t4 4
-#		or t4, t4, t3 
-#		getPosicao(t4, s5)
-#		la t6, blue
-#		
-#		
-#		#PrintPiece(s5, t6)
-#	invalid:
-#		addi t0, t0, 1
-#		addi t1, t1, -1
-#		j LoopPegaAsParada
-#	SaiLoopPegaAsParada:
-#    	jal popFunct
-#    	jr ra

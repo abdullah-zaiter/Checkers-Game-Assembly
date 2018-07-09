@@ -33,44 +33,52 @@ def fileWrite(g, p,address, i):
 def fileWrite2(i):
     if(i == 0):
         file2.write(
-            "addi sp, sp, -4" + "\n" +
-            "sw ra, 0(sp)" + "\n" +
-            "jal pushFunct" + "\n\n" +
+            " # a2 = cor" + "\n" +
+            "initTabuleiro:" + "\n" +
+            "\taddi sp, sp, -4" + "\n" +
+            "\tsw ra, 0(sp)" + "\n" +
+            "\tjal pushFunct" + "\n\n" +
 
-            "li t5, GREEN" + "\n" +
+            "\tli t5, BLUE" + "\n" +
             "\tli t6, RED" + "\n\n" +
 
-            "beq a2, t6, startGREEN  # se cor init = RED" + "\n" +
-            "j startRED" + "\n" +
-            "startGREEN:" + "\n" +
-            "\tli a2, GREEN" + "\n" +
-            "\tj continueTab" + "\n" +
-            "startRED:  # t1 continua verde, aliado = vermelho" + "\n" +
-            "\tli a2, RED" + "\n" +
-            "continueTab:" + "\n\n")
+            "\tbeq a2, t6, startBLUE  # se cor init = RED" + "\n" +
+            "\tj startRED" + "\n" +
+            "\tstartBLUE:" + "\n" +
+            "\t\tli a2, BLUE" + "\n" +
+            "\t\tli s1, RED" + "\n" +
+            "\t\tli s2, BLUE" + "\n" +
+            "\t\tj continueTab" + "\n" +
+            "\tstartRED:  # t1 continua verde, aliado = vermelho" + "\n" +
+            "\t\tli a2, RED" + "\n" +
+            "\t\tli s2, RED" + "\n" +
+            "\t\tli s1, BLUE" + "\n" +
+            "\tcontinueTab:" + "\n\n")
+
+    file2.write("\tli a0, piece" + Name[i] +
+                    "#t0 = posicao de memoria visual" + "\n")
+    file2.write("\tli t2, Address" +
+                Name[i] + "#t2 = posicao memoria hash" + "\n")
+    file2.write("\tsw a0, 0(t2)" + "\n")
 
     if ((i < 12) or (i > 19)):
-        file2.write("li a0, piece" + Name[i] +
-                    "#t0 = posicao de memoria visual" + "\n")
-        file2.write("li t2, Address" +
-                    Name[i] + "#t2 = posicao memoria hash" + "\n")
-        file2.write("sw a0, 0(t2)" + "\n")
-        file2.write("jal PrintPiece" + "\n\n")
+
+        file2.write("\n\n"+"\tjal PrintPiece" + "\n\n")
     elif(i == 19):
         file2.write(
-            "beq a2, t6, turnGREEN  # se cor = RED =>" + "\n" +
-            "j REDdy" + "\n" +
-            "turnGREEN:" + "\n" +
-            "    \tli a2, GREEN" + "\n" +
-            "    \tj continueTab2" + "\n" +
-            "REDdy:" + "\n" +
-            "    \tli a2, RED" + "\n" +
-            "continueTab2:"+"\n\n"
+            "\n\n\tbeq a2, t6, turnBLUE  # se cor = RED =>" + "\n" +
+            "\tj REDdy" + "\n" +
+            "\tturnBLUE:" + "\n" +
+            "\t    \tli a2, BLUE" + "\n" +
+            "\t    \tj continueTab2" + "\n" +
+            "\tREDdy:" + "\n" +
+            "\t    \tli a2, RED" + "\n" +
+            "\tcontinueTab2:"+"\n\n"
         )
     if(i == 31):
         file2.write(
-            "jal popFunct"+ "\n" +
-            "jr ra"+ "\n")
+            "\tjal popFunct"+ "\n" +
+            "\tjr ra"+ "\n")
 
 def main():
     x = 25
@@ -109,10 +117,12 @@ def main():
 if __name__ == '__main__':
 
     file = open("mapping2D.s", "w")
-    file2 = open("init2DMapeamento.s", "w")
+    file2 = open("../lib/init2DMapeamento.s", "w")
+    file3 = open("posJose.s", "w")
+    
 
     main()
-
+    file3.close()
     file2.close()
     file.close()
 

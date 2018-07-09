@@ -27,4 +27,21 @@ userToJose:
 	j maincontinue
 
 
+getYtoJose:
+
+	li a7, 12
+	jal exceptionHandling
+	li t0, 0xFFFFFFCF
+	add a0, a0, t0 #a0 = 0x0000000y
+
+
+
+getXtoJose:
+
+	li a7, 12
+	jal exceptionHandling
+	li t1, 0xFFFFFF9F
+	add a0 , a0, t1	#a1 = 0x0000000x
+
+
 

@@ -42,11 +42,16 @@
 
 
 #Imprime o tabuleiro
-.macro PrintBoard()
+PrintBoard:
+		
+		addi sp, sp, -4
+    	sw ra, 0(sp)
+    	jal pushAll
+
 		li a3, 8#linhas
 		li a4, 8#colunas
-LOOP:		beq a3, zero, PRINTCOORD
-LOOPLINE:	beq a4, zero, JUMPLINE
+LOOP_PrintBoard:		beq a3, zero, PRINTCOORD
+LOOP_PrintBoardLINE:	beq a4, zero, JUMPLINE
 		li t0, 2
 		add t1, a3, a4
 		rem t0, t1, t0
@@ -66,7 +71,7 @@ LOOPLINE:	beq a4, zero, JUMPLINE
 		add t0, t0, t1
 		
 		PaintSquareReg(t0, BoardTileSize, DARKBROWN)
-		j LOOPLINE
+		j LOOP_PrintBoardLINE
 		
 PAINT_COLOR1:	li t0, BoardBg
 		li t1, BoardTileSize
@@ -81,11 +86,11 @@ PAINT_COLOR1:	li t0, BoardBg
 		add t0, t0, t1
 		
 		PaintSquareReg(t0, BoardTileSize, LIGHTBROWN)
-		j LOOPLINE
+		j LOOP_PrintBoardLINE
 		
 JUMPLINE:	addi a3, a3, -1
 		li a4, 8
-		j LOOP
+		j LOOP_PrintBoard
 		
 	# Rotina para imprimir as coordenadas do tabuleiro
 PRINTCOORD:
@@ -97,7 +102,7 @@ PRINTCOORD:
 		mv a4, a0
 		
 		li a5, 8
-PRINTCHARLOOP:	beq a5, zero, PRINTNUM		
+PRINTCHARLOOP_PrintBoard:	beq a5, zero, PRINTNUM		
 		jal exceptionHandling
 		
 		addi a4, a4, 2	#proxima letra
@@ -106,7 +111,7 @@ PRINTCHARLOOP:	beq a5, zero, PRINTNUM
 		addi a5, a5, -1
 		addi a1, a1, 25	# proxima posicao da letra
 		
-		j PRINTCHARLOOP
+		j PRINTCHARLOOP_PrintBoard
 
 PRINTNUM:
 		la a0, nums
@@ -116,7 +121,7 @@ PRINTNUM:
 		mv a4, a0
 		li a5, 8
 		
-PRINTNUMLOOP:	beq a5, zero, END
+PRINTNUMLOOP_PrintBoard:	beq a5, zero, END_PrintBoard
 		jal exceptionHandling
 		
 		addi a4, a4, 2	# proximo numero impresso
@@ -125,11 +130,12 @@ PRINTNUMLOOP:	beq a5, zero, END
 		addi a5, a5, -1
 		addi a2, a2, 25	#proxima posicao do numero
 		
-		j PRINTNUMLOOP
+		j PRINTNUMLOOP_PrintBoard
 		
 		
-END:
-.end_macro
+END_PrintBoard:
+	jal popAll
+    jr ra
 
 #________________________________________________________________________________________________________________
 MainMenu:
@@ -182,7 +188,7 @@ MainMenu_MESSAGES:
 PaintSquare:
 	addi sp, sp, -4
     sw ra, 0(sp)
-    jal pushFunct
+    jal pushAll
 
 	add t0, a0, a1
 	mv t1, a1
@@ -205,7 +211,7 @@ PaintSquare_JumpLine:
 	j PaintSquare_Loop
 	
 PaintSquare_End:
-	jal popFunct
+	jal popAll
     jr ra
 	
 	

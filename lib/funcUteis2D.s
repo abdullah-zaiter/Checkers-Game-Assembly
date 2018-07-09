@@ -82,7 +82,7 @@ PrintPiece:
 
 
 #a0 = pos inicial do quadrado na memoria
-PrintPieceGreenKing:
+PrintPieceBLUEKing:
     
     addi sp, sp, -4
     sw ra, 0(sp)
@@ -123,13 +123,13 @@ initTabuleiro:
     sw ra, 0(sp)
     jal pushFunct
     
-    li t5, GREEN
+    li t5, BLUE
     	li t6, RED
     
-    beq a2, t6, startGREEN  # se cor init = RED
+    beq a2, t6, startBLUE  # se cor init = RED
     j startRED
-    startGREEN:
-    	li a2, GREEN
+    startBLUE:
+    	li a2, BLUE
     	j continueTab
     startRED:  # t1 continua verde, aliado = vermelho
     	li a2, RED
@@ -195,10 +195,10 @@ initTabuleiro:
     sw a0, 0(t2)
     jal PrintPiece
     
-    beq a2, t6, turnGREEN  # se cor = RED =>
+    beq a2, t6, turnBLUE  # se cor = RED =>
     j REDdy
-    turnGREEN:
-        	li a2, GREEN
+    turnBLUE:
+        	li a2, BLUE
         	j continueTab2
     REDdy:
         	li a2, RED

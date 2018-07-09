@@ -27,7 +27,7 @@ def fileWrite(g, p,address, i):
         file.write(".eqv AddressHashTableBg " + hex(AddressHashTableBg) + "\n\n")
     file.write(".eqv " + Name[i] + " " + g + "\n")
     file.write(".eqv " + "piece" + Name[i] + " " + p + "\n")
-    file.write(".eqv " + "AddressHash" + Name[i] + " " + address + "\n")
+    file.write(".eqv " + "Address" + Name[i] + " " + address + "\n")
 
 
 def fileWrite2(i):
@@ -73,14 +73,17 @@ def fileWrite2(i):
             "jr ra"+ "\n")
 
 def main():
-    x = 0
+    x = 25
     y = 0
     f = int(x)+(320*int(y))+BoardBg
     i_x = 50
     i_y = 25
     for i in range (0,32):
         if(x >= 200):
-            x = 0
+            if(y%2 == 0):
+                x = 0
+            else:
+                x = 25
             y = y+i_y
         ###Calculo endereço da posicao de cada quadrado do tabuleiro na memoria de imagem    
         q = int(x)+(320*int(y))+BoardBg

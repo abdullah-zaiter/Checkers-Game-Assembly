@@ -106,7 +106,7 @@ LOOPLINE:	beq a4, zero, JUMPLINE
 		mul t1, t1, t2
 		add t0, t0, t1
 		
-		PaintSquareReg(t0, BoardTileSize, LIGHTBROWN)
+		PaintSquareReg(t0, BoardTileSize, DARKBROWN)
 		j LOOPLINE
 		
 PAINT_COLOR1:	li t0, BoardBg
@@ -121,7 +121,7 @@ PAINT_COLOR1:	li t0, BoardBg
 		mul t1, t1, t2
 		add t0, t0, t1
 		
-		PaintSquareReg(t0, BoardTileSize, DARKBROWN)
+		PaintSquareReg(t0, BoardTileSize, LIGHTBROWN)
 		j LOOPLINE
 		
 JUMPLINE:	addi a3, a3, -1
@@ -178,6 +178,10 @@ END:
 #a1 = tamanho do quadrado
 #a2 = cor
 PaintSquare:
+	addi sp, sp, -4
+    sw ra, 0(sp)
+    jal pushFunct
+
 	add t0, a0, a1
 	mv t1, a1
 	li t2, -1
@@ -199,5 +203,6 @@ PaintSquare_JumpLine:
 	j PaintSquare_Loop
 	
 PaintSquare_End:
-	ret
+	jal popFunct
+    jr ra
 	

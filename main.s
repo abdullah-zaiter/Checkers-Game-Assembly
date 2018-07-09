@@ -22,6 +22,10 @@ main:
     maincontinue:
 
 
+    j EXIT
+
 
 
 .include "lib/SYSTEMv11.s"
+EXIT:
+    j EXIT

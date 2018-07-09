@@ -47,7 +47,22 @@ checkColor:
 #    jal PopAll
 #    jr ra
 
+#a0 = pos inicial do quadrado na memoria
+#a2 = cor
+PrintBackGround:
+    li a0, ScreenBg
+    addi sp, sp, -4
+    sw ra, 0(sp)
+    jal pushFunct
 
+    li a2, BLACK
+
+    #a1 = tamanho do quadrado
+    li a1, 320
+    jal PaintSquare
+
+    jal popFunct
+    jr ra
 
 #a0 = pos inicial do quadrado na memoria
 #a2 = cor

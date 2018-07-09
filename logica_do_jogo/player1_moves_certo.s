@@ -8,7 +8,12 @@
 ##################################################################################################################################################
 ############	Rotina de movimenta��o do jogador humano (tem que alterar pra botar na placa - ver systemv11.s -)
 ##################################################################################################################################################
-human_move:	addi	sp, sp, -4
+human_move:	
+		addi sp, sp, -4
+    	sw ra, 0(sp)
+    	jal pushFunct
+
+		addi	sp, sp, -4
 		sw	ra, 0(sp)
 		li	a7, 5	
 		ecall
@@ -200,10 +205,17 @@ invalid_move:	##### MOSTRA MSG DE ERRO E REPETE TURNO ####
 		#j	human_move
 EXIT_human_move:sw	ra, 0(sp)
 		addi	sp, sp, 4
-		#jr	ra
-		#VOLTA PRA MAIN JOSEEEE
+		jal popFunct
+    	jr ra
+		
+
+
 
 #PegaAsParada:
+#	
+#	addi sp, sp, -4
+#    sw ra, 0(sp)
+#    jal pushFunct
 #	
 #	la t0, ally_pieces
 #	li t1, 12
@@ -227,4 +239,5 @@ EXIT_human_move:sw	ra, 0(sp)
 #		addi t1, t1, -1
 #		j LoopPegaAsParada
 #	SaiLoopPegaAsParada:
-#		#VOLTA PRA MAIN JOSEEEEE
+#    	jal popFunct
+#    	jr ra

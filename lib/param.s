@@ -1,5 +1,10 @@
    .data
+
+	.eqv _bmpAddress	0x10040	
+	chars: .string "A", "B", "C", "D", "E", "F", "G", "H"
+
     # Limites da tela
+	
 	.eqv ScreenBg 0xFF000000
 	.eqv ScreenEnd 0xFF012C00
 	.eqv ScreenHeight 240
@@ -34,6 +39,8 @@
 	.eqv BROWN 0x13
 	.eqv LIGHTBROWN 0x66
 	.eqv DARKBROWN 0x0A
+	.eqv ERASE 0x0A
+	
 
 	
 	.eqv TRANSPARENT 0xc7

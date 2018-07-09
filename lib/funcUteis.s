@@ -1,6 +1,4 @@
-.data
-.eqv _bmpAddress	0x10040	
-	chars: .string "A", "B", "C", "D", "E", "F", "G", "H"
+
 #BLACK:			.word	0x00000000 # BLACK
 #WHITE:			.word	0x00ffffff # WHITE
 #	
@@ -19,45 +17,6 @@
 #	.eqv DARKBLUE 0xc0
 #	.eqv CYAN 0x48
 .text
-
-#deve ser usado com registradores sX ou aX (tX nao funcionam)
-.macro PaintPixel(%color, %x, %y)
-		push(%color)
-		push(%x)
-		push(%y)
-		li t0, 320
-		mul t0, %y, t0			##	Yi * 320
-		add t1, t0, %x 		## 	Yi*320 + Xi
-		li	t2, ScreenBg
-		add a0, t1, t2	## 	Yi*320 + Xi + Endereço Inicial
-		pop(%y)
-		pop(%x)
-		pop(%color)
-		add a1, zero, %color
-		sb	a1, 0(a0)
-
-.end_macro
-
-.macro PaintLine(%color, %x, %y, %xf)
-	LOOP:
-		push(%color)
-		push(%x)
-		push(%y)
-		push(%xf)
-		beq %x, %xf, END
-		PaintPixel(%color, %x, %y)
-		pop(%xf)
-		pop(%y)
-		pop(%x)
-		pop(%color)
-		addi %x, %x, 1
-		j LOOP
-	END:
-		pop(%xf)
-		pop(%y)
-		pop(%x)
-		pop(%color)
-.end_macro
 
 #deve ser usado com registradores sX (tX nao funcionam)
 .macro PaintSquare(%pos, %size, %color)

@@ -147,8 +147,8 @@
 	Sound(TONE_CS5, 1000, TESTE, 120)
 .end_macro
 	
-main:	
-	JurassicParkMusic()
-j EXIT
-.include "SYSTEMv11.s"
-EXIT:
+#main:	
+#	JurassicParkMusic()
+#j EXIT
+#.include "SYSTEMv11.s"
+#EXIT:

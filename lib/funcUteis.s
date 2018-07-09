@@ -109,20 +109,20 @@ PRINTCHARLOOP:	beq a5, zero, PRINTNUM
 		j PRINTCHARLOOP
 
 PRINTNUM:
-		li a7, 101	# rotina de imprimir numero na tela
-		li a0, 1
+		la a0, nums
 		li a1, 8
 		li a2, 30
 		li a3, WHITE
-		li a4, 9
-		li a5, 1
+		mv a4, a0
+		li a5, 8
 		
-PRINTNUMLOOP:	beq a0, a4, END
+PRINTNUMLOOP:	beq a5, zero, END
 		jal exceptionHandling
 		
-		addi a5, a5, 1	# proximo numero impresso
-		mv a0, a5
+		addi a4, a4, 2	# proximo numero impresso
+		mv a0, a4
 		
+		addi a5, a5, -1
 		addi a2, a2, 25	#proxima posicao do numero
 		
 		j PRINTNUMLOOP
